@@ -24,7 +24,18 @@ class WebSocketClient {
     }
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/ws/events`;
+    let wsUrl = `${protocol}//${window.location.host}/ws/events`;
+    if (import.meta.env.VITE_WS_URL) {
+      wsUrl = `${import.meta.env.VITE_WS_URL.replace(/\/+$/, '')}/ws/events`;
+    } else if (import.meta.env.VITE_API_URL) {
+      try {
+        const u = new URL(import.meta.env.VITE_API_URL);
+        const wsProto = u.protocol === 'https:' ? 'wss:' : 'ws:';
+        wsUrl = `${wsProto}//${u.host}/ws/events`;
+      } catch (e) {
+        // Fallback to location.host
+      }
+    }
 
     try {
       this.socket = new WebSocket(wsUrl);

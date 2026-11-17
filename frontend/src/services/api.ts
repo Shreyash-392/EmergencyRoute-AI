@@ -15,7 +15,8 @@ import {
   VehicleRankingResponse,
 } from '../types';
 
-const API_BASE = '/api/v1';
+export const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const API_BASE = `${API_ORIGIN}/api/v1`;
 
 export const apiClient = axios.create({
   baseURL: API_BASE,

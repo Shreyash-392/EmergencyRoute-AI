@@ -9,6 +9,7 @@
  */
 
 import { GeocodeResult } from '../types';
+import { API_ORIGIN } from './api';
 
 export interface TomTomFlowSegment {
   currentSpeed: number;
@@ -45,7 +46,7 @@ let hasCheckedStatus: boolean = false;
 // Initialize telemetry status in background
 const checkInitialStatus = async () => {
   try {
-    const res = await fetch('/api/v1/traffic/telemetry-status');
+    const res = await fetch(`${API_ORIGIN}/api/v1/traffic/telemetry-status`);
     if (res.ok) {
       const data = await res.json();
       isServerConfigured = Boolean(data.configured);
@@ -71,7 +72,7 @@ export const tomtomService = {
    */
   async fetchStatus(): Promise<boolean> {
     try {
-      const res = await fetch('/api/v1/traffic/telemetry-status');
+      const res = await fetch(`${API_ORIGIN}/api/v1/traffic/telemetry-status`);
       if (res.ok) {
         const data = await res.json();
         isServerConfigured = Boolean(data.configured);
@@ -90,35 +91,35 @@ export const tomtomService = {
    * Style: relative0 (green = free flow, yellow = delay, red = congestion)
    */
   getTrafficFlowTileUrl(): string {
-    return '/api/v1/traffic/tiles/flow/{z}/{x}/{y}.png';
+    return `${API_ORIGIN}/api/v1/traffic/tiles/flow/{z}/{x}/{y}.png`;
   },
 
   /**
    * Real-time Traffic Incidents tile URL reverse-proxied via backend server.
    */
   getTrafficIncidentsTileUrl(): string {
-    return '/api/v1/traffic/tiles/incidents/{z}/{x}/{y}.png';
+    return `${API_ORIGIN}/api/v1/traffic/tiles/incidents/{z}/{x}/{y}.png`;
   },
 
   /**
    * TomTom Basic Light vector-rendered raster tile URL reverse-proxied via backend server.
    */
   getTomTomLightTileUrl(): string {
-    return '/api/v1/traffic/tiles/light/{z}/{x}/{y}.png';
+    return `${API_ORIGIN}/api/v1/traffic/tiles/light/{z}/{x}/{y}.png`;
   },
 
   /**
    * TomTom Basic Night / Dark mode raster tile URL reverse-proxied via backend server.
    */
   getTomTomNightTileUrl(): string {
-    return '/api/v1/traffic/tiles/night/{z}/{x}/{y}.png';
+    return `${API_ORIGIN}/api/v1/traffic/tiles/night/{z}/{x}/{y}.png`;
   },
 
   /**
    * TomTom Satellite imagery raster tile URL reverse-proxied via backend server.
    */
   getTomTomSatelliteTileUrl(): string {
-    return '/api/v1/traffic/tiles/sat/{z}/{x}/{y}.png';
+    return `${API_ORIGIN}/api/v1/traffic/tiles/sat/{z}/{x}/{y}.png`;
   },
 
   /**
@@ -130,7 +131,7 @@ export const tomtomService = {
     if (!trimmed) return [];
 
     try {
-      const url = `/api/v1/traffic/search?query=${encodeURIComponent(trimmed)}&limit=${limit}`;
+      const url = `${API_ORIGIN}/api/v1/traffic/search?query=${encodeURIComponent(trimmed)}&limit=${limit}`;
       const res = await fetch(url);
       if (!res.ok) return [];
 
@@ -164,7 +165,7 @@ export const tomtomService = {
    */
   async getFlowSegmentData(lat: number, lon: number): Promise<TomTomFlowSegment | null> {
     try {
-      const url = `/api/v1/traffic/flow-segment?lat=${lat}&lon=${lon}`;
+      const url = `${API_ORIGIN}/api/v1/traffic/flow-segment?lat=${lat}&lon=${lon}`;
       const res = await fetch(url);
       if (!res.ok) return null;
 
@@ -207,7 +208,7 @@ export const tomtomService = {
    */
   async getIncidentDetails(): Promise<TomTomIncident[]> {
     try {
-      const url = `/api/v1/traffic/incident-details`;
+      const url = `${API_ORIGIN}/api/v1/traffic/incident-details`;
       const res = await fetch(url);
       if (!res.ok) return [];
 
@@ -273,7 +274,7 @@ export const tomtomService = {
       return { success: false, message: 'API key cannot be empty.' };
     }
     try {
-      const res = await fetch('/api/v1/traffic/set-key', {
+      const res = await fetch(`${API_ORIGIN}/api/v1/traffic/set-key`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ api_key: trimmed }),
@@ -295,7 +296,7 @@ export const tomtomService = {
    */
   async removeServerKey(): Promise<{ success: boolean; message: string }> {
     try {
-      const res = await fetch('/api/v1/traffic/remove-key', { method: 'POST' });
+      const res = await fetch(`${API_ORIGIN}/api/v1/traffic/remove-key`, { method: 'POST' });
       const data = await res.json();
       if (res.ok) {
         isServerConfigured = false;
