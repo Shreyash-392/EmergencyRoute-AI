@@ -1,0 +1,73 @@
+scenario_id,highway,edge_count,avg_baseline_speed,avg_current_speed,avg_speed_ratio,avg_travel_time_seconds
+emergency_incident,"['living_street', 'residential']",4,15.0,6.32,0.422,37.1
+emergency_incident,"['unclassified', 'living_street']",8,25.0,11.05,0.442,178.7
+emergency_incident,"['unclassified', 'residential']",12,25.0,11.02,0.442,90.25
+emergency_incident,living_street,1322,15.0,8.0,0.533,35.74
+emergency_incident,residential,4714,25.0,13.37,0.535,24.98
+emergency_incident,secondary,254,40.0,17.28,0.432,29.49
+emergency_incident,secondary_link,2,30.0,12.85,0.428,45.53
+emergency_incident,tertiary,748,30.0,12.96,0.432,54.59
+emergency_incident,tertiary_link,4,30.0,12.58,0.419,67.02
+emergency_incident,trunk,100,70.0,30.33,0.433,68.6
+emergency_incident,trunk_link,21,30.0,12.9,0.43,26.91
+emergency_incident,unclassified,3040,25.0,10.8,0.432,53.17
+evening_peak,"['living_street', 'residential']",4,15.0,7.98,0.532,29.55
+evening_peak,"['unclassified', 'living_street']",8,25.0,13.29,0.531,147.36
+evening_peak,"['unclassified', 'residential']",12,25.0,13.07,0.523,75.78
+evening_peak,living_street,1322,15.0,9.82,0.655,29.12
+evening_peak,residential,4714,25.0,16.35,0.654,20.42
+evening_peak,secondary,254,40.0,21.16,0.529,23.45
+evening_peak,secondary_link,2,30.0,16.35,0.546,35.63
+evening_peak,tertiary,748,30.0,15.85,0.528,44.82
+evening_peak,tertiary_link,4,30.0,15.73,0.525,52.75
+evening_peak,trunk,100,70.0,37.04,0.529,56.52
+evening_peak,trunk_link,21,30.0,15.8,0.526,22.03
+evening_peak,unclassified,3040,25.0,13.21,0.528,43.49
+midday_normal,"['living_street', 'residential']",4,15.0,12.32,0.822,19.04
+midday_normal,"['unclassified', 'living_street']",8,25.0,20.9,0.835,94.04
+midday_normal,"['unclassified', 'residential']",12,25.0,20.92,0.837,47.15
+midday_normal,living_street,1322,15.0,14.76,0.984,19.32
+midday_normal,residential,4714,25.0,24.61,0.984,13.52
+midday_normal,secondary,254,40.0,32.99,0.825,15.26
+midday_normal,secondary_link,2,30.0,25.6,0.853,22.7
+midday_normal,tertiary,748,30.0,24.84,0.828,28.54
+midday_normal,tertiary_link,4,30.0,25.65,0.855,32.02
+midday_normal,trunk,100,70.0,57.75,0.825,36.26
+midday_normal,trunk_link,21,30.0,24.55,0.818,13.96
+midday_normal,unclassified,3040,25.0,20.67,0.827,27.71
+monsoon_flooding,"['living_street', 'residential']",4,15.0,7.08,0.473,33.52
+monsoon_flooding,"['unclassified', 'living_street']",8,25.0,12.19,0.488,160.66
+monsoon_flooding,"['unclassified', 'residential']",12,25.0,12.22,0.489,81.83
+monsoon_flooding,living_street,1322,15.0,9.06,0.604,31.61
+monsoon_flooding,residential,4714,25.0,15.07,0.603,22.13
+monsoon_flooding,secondary,254,40.0,19.37,0.484,25.89
+monsoon_flooding,secondary_link,2,30.0,14.7,0.492,39.57
+monsoon_flooding,tertiary,748,30.0,14.62,0.487,48.64
+monsoon_flooding,tertiary_link,4,30.0,14.1,0.47,58.3
+monsoon_flooding,trunk,100,70.0,33.99,0.485,62.07
+monsoon_flooding,trunk_link,21,30.0,14.59,0.486,24.09
+monsoon_flooding,unclassified,3040,25.0,12.18,0.487,47.21
+morning_peak,"['living_street', 'residential']",4,15.0,8.88,0.59,26.52
+morning_peak,"['unclassified', 'living_street']",8,25.0,14.59,0.584,134.37
+morning_peak,"['unclassified', 'residential']",12,25.0,14.21,0.569,68.54
+morning_peak,living_street,1322,15.0,10.71,0.714,26.72
+morning_peak,residential,4714,25.0,17.84,0.714,18.69
+morning_peak,secondary,254,40.0,23.09,0.577,21.76
+morning_peak,secondary_link,2,30.0,17.45,0.582,33.34
+morning_peak,tertiary,748,30.0,17.23,0.574,41.25
+morning_peak,tertiary_link,4,30.0,17.1,0.569,49.62
+morning_peak,trunk,100,70.0,40.65,0.581,51.45
+morning_peak,trunk_link,21,30.0,17.21,0.574,19.81
+morning_peak,unclassified,3040,25.0,14.39,0.575,39.99
+night_freeflow,"['living_street', 'residential']",4,15.0,14.3,0.953,16.55
+night_freeflow,"['unclassified', 'living_street']",8,25.0,22.86,0.914,84.16
+night_freeflow,"['unclassified', 'residential']",12,25.0,23.91,0.956,41.23
+night_freeflow,living_street,1322,15.0,15.0,1.0,19.0
+night_freeflow,residential,4714,25.0,25.0,1.0,13.3
+night_freeflow,secondary,254,40.0,37.96,0.949,13.2
+night_freeflow,secondary_link,2,30.0,29.55,0.985,19.66
+night_freeflow,tertiary,748,30.0,28.46,0.949,24.79
+night_freeflow,tertiary_link,4,30.0,29.08,0.969,29.31
+night_freeflow,trunk,100,70.0,66.17,0.945,31.73
+night_freeflow,trunk_link,21,30.0,28.6,0.953,12.18
+night_freeflow,unclassified,3040,25.0,23.75,0.95,24.15

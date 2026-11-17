@@ -1,0 +1,287 @@
+[
+  {
+    "corridor_name": "Civil Hospital Phagwara to LPU Main Gate (Arterial Corridor)",
+    "description": "Major intercity emergency arterial (GT Road / NH44)",
+    "start_node": 1368112650,
+    "dest_node": 11578644470,
+    "objective": "traffic_aware",
+    "algorithms": {
+      "A_Star": {
+        "success": true,
+        "mean_execution_time_ms": 79.487,
+        "median_execution_time_ms": 78.039,
+        "nodes_explored": 1205,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 482.94,
+        "hops_count": 12,
+        "is_optimal": true,
+        "error_message": null
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "mean_execution_time_ms": 1.919,
+        "median_execution_time_ms": 1.409,
+        "nodes_explored": 12,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 482.94,
+        "hops_count": 12,
+        "is_optimal": false,
+        "error_message": null
+      },
+      "BFS": {
+        "success": true,
+        "mean_execution_time_ms": 5.693,
+        "median_execution_time_ms": 5.231,
+        "nodes_explored": 209,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 482.94,
+        "hops_count": 12,
+        "is_optimal": false,
+        "error_message": null
+      },
+      "DFS": {
+        "success": true,
+        "mean_execution_time_ms": 134.06,
+        "median_execution_time_ms": 113.374,
+        "nodes_explored": 2366,
+        "path_distance_km": 137.625,
+        "estimated_travel_time_minutes": 301.03,
+        "weighted_path_cost": 18062.02,
+        "hops_count": 903,
+        "is_optimal": false,
+        "error_message": null
+      }
+    }
+  },
+  {
+    "corridor_name": "Railway Station to Central Bus Stand (Urban Multi-Block Corridor)",
+    "description": "Real intermodal urban corridor from Railway Station gate to Bus Stand (0.582 km)",
+    "start_node": 5214151814,
+    "dest_node": 3148701364,
+    "objective": "travel_time",
+    "algorithms": {
+      "A_Star": {
+        "success": true,
+        "mean_execution_time_ms": 2.347,
+        "median_execution_time_ms": 2.121,
+        "nodes_explored": 28,
+        "path_distance_km": 0.582,
+        "estimated_travel_time_minutes": 1.35,
+        "weighted_path_cost": 81.05,
+        "hops_count": 8,
+        "is_optimal": true,
+        "error_message": null
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "mean_execution_time_ms": 0.912,
+        "median_execution_time_ms": 0.879,
+        "nodes_explored": 7,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 93.24,
+        "hops_count": 7,
+        "is_optimal": false,
+        "error_message": null
+      },
+      "BFS": {
+        "success": true,
+        "mean_execution_time_ms": 3.958,
+        "median_execution_time_ms": 2.824,
+        "nodes_explored": 80,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 93.24,
+        "hops_count": 7,
+        "is_optimal": false,
+        "error_message": null
+      },
+      "DFS": {
+        "success": true,
+        "mean_execution_time_ms": 6.105,
+        "median_execution_time_ms": 5.919,
+        "nodes_explored": 60,
+        "path_distance_km": 11.879,
+        "estimated_travel_time_minutes": 14.99,
+        "weighted_path_cost": 899.18,
+        "hops_count": 58,
+        "is_optimal": false,
+        "error_message": null
+      }
+    }
+  },
+  {
+    "corridor_name": "Subhash Nagar Adjacent Street Block Link",
+    "description": "Single-segment adjacent block link on GT Road (81.77 meters)",
+    "start_node": 444674679,
+    "dest_node": 1368112663,
+    "objective": "travel_time",
+    "algorithms": {
+      "A_Star": {
+        "success": true,
+        "mean_execution_time_ms": 0.273,
+        "median_execution_time_ms": 0.239,
+        "nodes_explored": 2,
+        "path_distance_km": 0.082,
+        "estimated_travel_time_minutes": 0.12,
+        "weighted_path_cost": 7.36,
+        "hops_count": 2,
+        "is_optimal": true,
+        "error_message": null
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "mean_execution_time_ms": 0.243,
+        "median_execution_time_ms": 0.23,
+        "nodes_explored": 2,
+        "path_distance_km": 0.082,
+        "estimated_travel_time_minutes": 0.12,
+        "weighted_path_cost": 7.36,
+        "hops_count": 2,
+        "is_optimal": false,
+        "error_message": null
+      },
+      "BFS": {
+        "success": true,
+        "mean_execution_time_ms": 1.022,
+        "median_execution_time_ms": 0.448,
+        "nodes_explored": 2,
+        "path_distance_km": 0.082,
+        "estimated_travel_time_minutes": 0.12,
+        "weighted_path_cost": 7.36,
+        "hops_count": 2,
+        "is_optimal": false,
+        "error_message": null
+      },
+      "DFS": {
+        "success": true,
+        "mean_execution_time_ms": 0.292,
+        "median_execution_time_ms": 0.26,
+        "nodes_explored": 2,
+        "path_distance_km": 0.082,
+        "estimated_travel_time_minutes": 0.12,
+        "weighted_path_cost": 7.36,
+        "hops_count": 2,
+        "is_optimal": false,
+        "error_message": null
+      }
+    }
+  },
+  {
+    "corridor_name": "Genuine Disconnected Destination in Separate Component",
+    "description": "Both nodes exist in Phagwara road graph, but belong to disconnected WCCs (nx.has_path is False)",
+    "start_node": 1368113153,
+    "dest_node": 5271348536,
+    "objective": "travel_time",
+    "algorithms": {
+      "A_Star": {
+        "success": false,
+        "mean_execution_time_ms": 169.984,
+        "median_execution_time_ms": 162.955,
+        "nodes_explored": 3956,
+        "path_distance_km": 0.0,
+        "estimated_travel_time_minutes": 0.0,
+        "weighted_path_cost": 0.0,
+        "hops_count": 0,
+        "is_optimal": false,
+        "error_message": "No directed path found from node 1368113153 to node 5271348536."
+      },
+      "Greedy_Best_First": {
+        "success": false,
+        "mean_execution_time_ms": 151.592,
+        "median_execution_time_ms": 150.371,
+        "nodes_explored": 3956,
+        "path_distance_km": 0.0,
+        "estimated_travel_time_minutes": 0.0,
+        "weighted_path_cost": 0.0,
+        "hops_count": 0,
+        "is_optimal": false,
+        "error_message": "No directed path found from node 1368113153 to node 5271348536."
+      },
+      "BFS": {
+        "success": false,
+        "mean_execution_time_ms": 104.432,
+        "median_execution_time_ms": 100.511,
+        "nodes_explored": 3956,
+        "path_distance_km": 0.0,
+        "estimated_travel_time_minutes": 0.0,
+        "weighted_path_cost": 0.0,
+        "hops_count": 0,
+        "is_optimal": false,
+        "error_message": "No directed path found from node 1368113153 to node 5271348536."
+      },
+      "DFS": {
+        "success": false,
+        "mean_execution_time_ms": 106.703,
+        "median_execution_time_ms": 110.95,
+        "nodes_explored": 3956,
+        "path_distance_km": 0.0,
+        "estimated_travel_time_minutes": 0.0,
+        "weighted_path_cost": 0.0,
+        "hops_count": 0,
+        "is_optimal": false,
+        "error_message": "No directed path found from node 1368113153 to node 5271348536."
+      }
+    }
+  },
+  {
+    "corridor_name": "Non-Existent Node Destination (Edge Case)",
+    "description": "Invalid target node ID missing from road network",
+    "start_node": 1368112650,
+    "dest_node": 999999999999,
+    "objective": "travel_time",
+    "algorithms": {
+      "A_Star": {
+        "success": false,
+        "mean_execution_time_ms": 0.032,
+        "median_execution_time_ms": 0.019,
+        "nodes_explored": 0,
+        "path_distance_km": 0.0,
+        "estimated_travel_time_minutes": 0.0,
+        "weighted_path_cost": 0.0,
+        "hops_count": 0,
+        "is_optimal": false,
+        "error_message": "Target node 999999999999 not present in road network."
+      },
+      "Greedy_Best_First": {
+        "success": false,
+        "mean_execution_time_ms": 0.019,
+        "median_execution_time_ms": 0.016,
+        "nodes_explored": 0,
+        "path_distance_km": 0.0,
+        "estimated_travel_time_minutes": 0.0,
+        "weighted_path_cost": 0.0,
+        "hops_count": 0,
+        "is_optimal": false,
+        "error_message": "Target node 999999999999 not present in road network."
+      },
+      "BFS": {
+        "success": false,
+        "mean_execution_time_ms": 0.019,
+        "median_execution_time_ms": 0.017,
+        "nodes_explored": 0,
+        "path_distance_km": 0.0,
+        "estimated_travel_time_minutes": 0.0,
+        "weighted_path_cost": 0.0,
+        "hops_count": 0,
+        "is_optimal": false,
+        "error_message": "Target node 999999999999 not present in road network."
+      },
+      "DFS": {
+        "success": false,
+        "mean_execution_time_ms": 0.015,
+        "median_execution_time_ms": 0.013,
+        "nodes_explored": 0,
+        "path_distance_km": 0.0,
+        "estimated_travel_time_minutes": 0.0,
+        "weighted_path_cost": 0.0,
+        "hops_count": 0,
+        "is_optimal": false,
+        "error_message": "Target node 999999999999 not present in road network."
+      }
+    }
+  }
+]

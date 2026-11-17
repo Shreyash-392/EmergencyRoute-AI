@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "audit_version": "1.1_post_independent_audit",
+  "is_valid": true,
+  "graph_type": "MultiDiGraph",
+  "is_directed": true,
+  "is_multidigraph": true,
+  "nodes_count": 3975,
+  "edges_count": 10229,
+  "geographic_bounds": {
+    "min_latitude": 31.169305,
+    "max_latitude": 31.277028,
+    "min_longitude": 75.707801,
+    "max_longitude": 75.833874,
+    "center": {
+      "latitude": 31.223167,
+      "longitude": 75.770838
+    }
+  },
+  "attributes": {
+    "total_length_km": 1276.16,
+    "calculation_method": "Exact summation of individual directed edge length attributes in metres divided by 1000",
+    "mean_edge_length_meters": 124.76,
+    "min_edge_length_meters": 0.52,
+    "max_edge_length_meters": 3596.55,
+    "mean_travel_time_seconds": 17.88,
+    "mean_speed_kph": 24.89,
+    "missing_length_count": 0,
+    "missing_travel_time_count": 0,
+    "observed_maxspeed_tags_count": 0,
+    "imputed_speed_limit_edges_count": 10229,
+    "speed_data_provenance": "100% estimated from OpenStreetMap highway tags. Zero edges contain observed raw maxspeed tags.",
+    "oneway_edges": 199,
+    "twoway_directed_edges": 10030,
+    "parallel_edge_pairs": 30,
+    "total_parallel_edges": 60
+  },
+  "connectivity": {
+    "weakly_connected_components": 7,
+    "largest_wcc_nodes": 3959,
+    "largest_wcc_percentage": 99.6,
+    "strongly_connected_components": 10,
+    "largest_scc_nodes": 3956,
+    "largest_scc_percentage": 99.52,
+    "isolated_nodes_count": 4,
+    "component_pruning_policy": "NO_DELETION (Disconnected and isolated nodes are intentionally preserved as per specification)"
+  },
+  "delhivery_integration_status": {
+    "architecture_implemented": true,
+    "mock_tests_passing": true,
+    "live_api_verified": false,
+    "status_code": "NOT_VERIFIED",
+    "reason": "No commercial DELHIVERY_API_KEY provided in environment. Client safely operates in verified offline fallback mode."
+  },
+  "traffic_status": {
+    "active_provider": "SyntheticTrafficProvider",
+    "is_live_data": false,
+    "seed": 42,
+    "closures_label": "SIMULATED ROAD CLOSURES"
+  }
+}
+

@@ -1,0 +1,76 @@
+{
+  "audit_date": "2026-11-06T22:08:00Z",
+  "audit_scope": "EmergencyRoute AI — Phase 1 Dataset & Integration Verification",
+  "provenance_registry": [
+    {
+      "dataset": "Road Network Graph (GraphML, GeoJSON, CSV)",
+      "file_paths": [
+        "data/processed/graph/phagwara_roads.graphml",
+        "data/processed/nodes/phagwara_nodes.geojson",
+        "data/processed/edges/phagwara_edges.geojson",
+        "data/processed/nodes/phagwara_nodes.csv",
+        "data/processed/edges/phagwara_edges.csv"
+      ],
+      "classification": "REAL_OBSERVATION",
+      "source": "OpenStreetMap contributors (OSM Planet Snapshot via OSMnx 2.x)",
+      "query_boundary": "Phagwara, Punjab, India (drive network)",
+      "osm_node_count": 3975,
+      "osm_edge_count": 10229,
+      "license": "Open Database License (ODbL) 1.0",
+      "attribution": "© OpenStreetMap contributors",
+      "integrity_status": "VERIFIED_PASS"
+    },
+    {
+      "dataset": "Road Speeds & Baseline Travel Times",
+      "classification": "ESTIMATED",
+      "source": "Regional highway type imputation (motorway=80 km/h, trunk=60 km/h, primary=50 km/h, secondary=40 km/h, residential=25 km/h, service=15 km/h)",
+      "observed_maxspeed_tags_count": 0,
+      "imputed_speed_edges_count": 10229,
+      "formula": "travel_time_seconds = length_meters / (speed_kph * 0.27778)",
+      "live_traffic_claim": false,
+      "integrity_status": "VERIFIED_PASS"
+    },
+    {
+      "dataset": "Traffic Observations & Diurnal Profiles",
+      "file_paths": [
+        "data/traffic/traffic_observations.csv",
+        "data/traffic/traffic_profiles.csv",
+        "data/traffic/traffic_scenarios.json"
+      ],
+      "classification": "SIMULATED_REPRODUCIBLE",
+      "source": "Deterministic Synthetic Traffic Model (NumPy Seed 42)",
+      "scenarios": ["morning_peak", "evening_peak", "afternoon_offpeak", "night_clear"],
+      "live_traffic_claim": false,
+      "is_live_flag": false,
+      "integrity_status": "VERIFIED_PASS"
+    },
+    {
+      "dataset": "Road Closures",
+      "file_path": "data/traffic/road_closures.csv",
+      "classification": "SIMULATED_TEST_DATA",
+      "source": "Manual incident injection for routing algorithm stress testing",
+      "real_world_claim": false,
+      "label": "[SIMULATED ROAD CLOSURE]",
+      "integrity_status": "VERIFIED_PASS"
+    },
+    {
+      "dataset": "Local Landmark POI Registry",
+      "file_path": "backend/app/integrations/delhivery/geocoding_service.py",
+      "classification": "VERIFIED_REFERENCE_COORDINATES",
+      "source": "Curated geographical coordinates for major civic facilities in Phagwara (Civil Hospital, LPU Gate, Phagwara Junction)",
+      "unmatched_query_behavior": "Returns empty results with clear 'offline fallback' notice rather than arbitrary guesswork",
+      "integrity_status": "VERIFIED_PASS"
+    },
+    {
+      "dataset": "Commercial Telematics & Map Services (Delhivery)",
+      "classification": "UNCONFIGURED_FALLBACK",
+      "source": "Delhivery Maps API Client (Mock-tested)",
+      "live_api_active": false,
+      "auth_key_present": false,
+      "verification_status": "NOT_VERIFIED_LIVE",
+      "fallback_active": true,
+      "integrity_status": "VERIFIED_HONEST_FALLBACK"
+    }
+  ]
+}
+

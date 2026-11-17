@@ -1,0 +1,4 @@
+closure_id,edge_id,u,v,key,reason,severity,start_time,expected_end_time,scenario_id
+closure_acc_01,incident_gt_road,1001,1002,0,[SIMULATED ROAD CLOSURE] Manual road closure test near Hanumangarh Chowk (GT Road),impassable,,,emergency_incident
+closure_flood_01,railway_underpass_01,2001,2002,0,[SIMULATED ROAD CLOSURE] Underpass closure test,impassable,,,monsoon_flooding
+closure_flood_02,railway_underpass_02,2002,2001,0,[SIMULATED ROAD CLOSURE] Underpass closure test (Opposite Direction),impassable,,,monsoon_flooding

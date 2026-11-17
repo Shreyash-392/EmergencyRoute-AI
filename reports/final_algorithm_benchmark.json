@@ -1,0 +1,1610 @@
+[
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "origin_node": 1368112650,
+    "dest_node": 11578644470,
+    "origin_coordinates": [
+      31.2223,
+      75.7672
+    ],
+    "dest_coordinates": [
+      31.2536,
+      75.7037
+    ],
+    "traffic_scenario": "morning_peak",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 4.021,
+        "median_execution_time_ms": 4.176,
+        "nodes_explored": 209,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 851.96,
+        "node_count": 12
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 39.216,
+        "median_execution_time_ms": 39.242,
+        "nodes_explored": 2366,
+        "path_distance_km": 137.625,
+        "estimated_travel_time_minutes": 301.03,
+        "weighted_path_cost": 29793.53,
+        "node_count": 903
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.246,
+        "median_execution_time_ms": 0.267,
+        "nodes_explored": 12,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 851.96,
+        "node_count": 12
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 26.743,
+        "median_execution_time_ms": 27.548,
+        "nodes_explored": 1469,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 851.96,
+        "node_count": 12
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 8.021,
+      "duration_minutes": 8.05,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "origin_node": 1368112650,
+    "dest_node": 11578644470,
+    "origin_coordinates": [
+      31.2223,
+      75.7672
+    ],
+    "dest_coordinates": [
+      31.2536,
+      75.7037
+    ],
+    "traffic_scenario": "evening_peak",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 2.362,
+        "median_execution_time_ms": 2.396,
+        "nodes_explored": 209,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 914.19,
+        "node_count": 12
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 27.519,
+        "median_execution_time_ms": 26.673,
+        "nodes_explored": 2366,
+        "path_distance_km": 137.625,
+        "estimated_travel_time_minutes": 301.03,
+        "weighted_path_cost": 32656.69,
+        "node_count": 903
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.187,
+        "median_execution_time_ms": 0.195,
+        "nodes_explored": 12,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 914.19,
+        "node_count": 12
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 32.437,
+        "median_execution_time_ms": 34.555,
+        "nodes_explored": 1543,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 914.19,
+        "node_count": 12
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 8.021,
+      "duration_minutes": 8.05,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "origin_node": 1368112650,
+    "dest_node": 11578644470,
+    "origin_coordinates": [
+      31.2223,
+      75.7672
+    ],
+    "dest_coordinates": [
+      31.2536,
+      75.7037
+    ],
+    "traffic_scenario": "midday_normal",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 2.716,
+        "median_execution_time_ms": 2.652,
+        "nodes_explored": 209,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 574.13,
+        "node_count": 12
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 41.232,
+        "median_execution_time_ms": 40.063,
+        "nodes_explored": 2366,
+        "path_distance_km": 137.625,
+        "estimated_travel_time_minutes": 301.03,
+        "weighted_path_cost": 20930.06,
+        "node_count": 903
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.177,
+        "median_execution_time_ms": 0.173,
+        "nodes_explored": 12,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 574.13,
+        "node_count": 12
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 20.643,
+        "median_execution_time_ms": 20.344,
+        "nodes_explored": 1098,
+        "path_distance_km": 8.025,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 570.57,
+        "node_count": 17
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 8.021,
+      "duration_minutes": 8.05,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "origin_node": 1368112650,
+    "dest_node": 11578644470,
+    "origin_coordinates": [
+      31.2223,
+      75.7672
+    ],
+    "dest_coordinates": [
+      31.2536,
+      75.7037
+    ],
+    "traffic_scenario": "night_freeflow",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 2.675,
+        "median_execution_time_ms": 2.556,
+        "nodes_explored": 209,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 503.62,
+        "node_count": 12
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 28.887,
+        "median_execution_time_ms": 27.342,
+        "nodes_explored": 2366,
+        "path_distance_km": 137.625,
+        "estimated_travel_time_minutes": 301.03,
+        "weighted_path_cost": 18812.94,
+        "node_count": 903
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.286,
+        "median_execution_time_ms": 0.301,
+        "nodes_explored": 12,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 503.62,
+        "node_count": 12
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 19.825,
+        "median_execution_time_ms": 19.616,
+        "nodes_explored": 976,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 503.62,
+        "node_count": 12
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 8.021,
+      "duration_minutes": 8.05,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "origin_node": 1368112650,
+    "dest_node": 11578644470,
+    "origin_coordinates": [
+      31.2223,
+      75.7672
+    ],
+    "dest_coordinates": [
+      31.2536,
+      75.7037
+    ],
+    "traffic_scenario": "emergency_incident",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 3.866,
+        "median_execution_time_ms": 3.672,
+        "nodes_explored": 209,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 1111.31,
+        "node_count": 12
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 34.697,
+        "median_execution_time_ms": 35.06,
+        "nodes_explored": 2366,
+        "path_distance_km": 137.625,
+        "estimated_travel_time_minutes": 301.03,
+        "weighted_path_cost": 39947.43,
+        "node_count": 903
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.15,
+        "median_execution_time_ms": 0.154,
+        "nodes_explored": 12,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 1111.31,
+        "node_count": 12
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 28.275,
+        "median_execution_time_ms": 30.162,
+        "nodes_explored": 1640,
+        "path_distance_km": 8.025,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 1110.96,
+        "node_count": 17
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 8.021,
+      "duration_minutes": 8.05,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "origin_node": 1368112650,
+    "dest_node": 11578644470,
+    "origin_coordinates": [
+      31.2223,
+      75.7672
+    ],
+    "dest_coordinates": [
+      31.2536,
+      75.7037
+    ],
+    "traffic_scenario": "monsoon_flooding",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 2.011,
+        "median_execution_time_ms": 1.979,
+        "nodes_explored": 209,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 997.66,
+        "node_count": 12
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 27.036,
+        "median_execution_time_ms": 25.225,
+        "nodes_explored": 2366,
+        "path_distance_km": 137.625,
+        "estimated_travel_time_minutes": 301.03,
+        "weighted_path_cost": 35401.34,
+        "node_count": 903
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.245,
+        "median_execution_time_ms": 0.222,
+        "nodes_explored": 12,
+        "path_distance_km": 8.021,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 997.66,
+        "node_count": 12
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 29.166,
+        "median_execution_time_ms": 30.417,
+        "nodes_explored": 1571,
+        "path_distance_km": 8.025,
+        "estimated_travel_time_minutes": 8.05,
+        "weighted_path_cost": 989.05,
+        "node_count": 17
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 8.021,
+      "duration_minutes": 8.05,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "origin_node": 5214151814,
+    "dest_node": 3148701364,
+    "origin_coordinates": [
+      31.2185,
+      75.7725
+    ],
+    "dest_coordinates": [
+      31.2215,
+      75.7738
+    ],
+    "traffic_scenario": "morning_peak",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.817,
+        "median_execution_time_ms": 0.79,
+        "nodes_explored": 80,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 160.42,
+        "node_count": 7
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.545,
+        "median_execution_time_ms": 0.553,
+        "nodes_explored": 60,
+        "path_distance_km": 11.879,
+        "estimated_travel_time_minutes": 14.99,
+        "weighted_path_cost": 1540.67,
+        "node_count": 58
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.107,
+        "median_execution_time_ms": 0.102,
+        "nodes_explored": 7,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 160.42,
+        "node_count": 7
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 0.422,
+        "median_execution_time_ms": 0.411,
+        "nodes_explored": 32,
+        "path_distance_km": 0.582,
+        "estimated_travel_time_minutes": 1.35,
+        "weighted_path_cost": 139.76,
+        "node_count": 8
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 0.582,
+      "duration_minutes": 1.35,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "origin_node": 5214151814,
+    "dest_node": 3148701364,
+    "origin_coordinates": [
+      31.2185,
+      75.7725
+    ],
+    "dest_coordinates": [
+      31.2215,
+      75.7738
+    ],
+    "traffic_scenario": "evening_peak",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 1.002,
+        "median_execution_time_ms": 1.008,
+        "nodes_explored": 80,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 176.62,
+        "node_count": 7
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.882,
+        "median_execution_time_ms": 0.808,
+        "nodes_explored": 60,
+        "path_distance_km": 11.879,
+        "estimated_travel_time_minutes": 14.99,
+        "weighted_path_cost": 1701.16,
+        "node_count": 58
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.163,
+        "median_execution_time_ms": 0.162,
+        "nodes_explored": 7,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 176.62,
+        "node_count": 7
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 0.607,
+        "median_execution_time_ms": 0.602,
+        "nodes_explored": 38,
+        "path_distance_km": 0.582,
+        "estimated_travel_time_minutes": 1.35,
+        "weighted_path_cost": 153.88,
+        "node_count": 8
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 0.582,
+      "duration_minutes": 1.35,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "origin_node": 5214151814,
+    "dest_node": 3148701364,
+    "origin_coordinates": [
+      31.2185,
+      75.7725
+    ],
+    "dest_coordinates": [
+      31.2215,
+      75.7738
+    ],
+    "traffic_scenario": "midday_normal",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 1.225,
+        "median_execution_time_ms": 1.2,
+        "nodes_explored": 80,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 110.26,
+        "node_count": 7
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.752,
+        "median_execution_time_ms": 0.731,
+        "nodes_explored": 60,
+        "path_distance_km": 11.879,
+        "estimated_travel_time_minutes": 14.99,
+        "weighted_path_cost": 1077.61,
+        "node_count": 58
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.147,
+        "median_execution_time_ms": 0.137,
+        "nodes_explored": 7,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 110.26,
+        "node_count": 7
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 0.456,
+        "median_execution_time_ms": 0.451,
+        "nodes_explored": 25,
+        "path_distance_km": 0.582,
+        "estimated_travel_time_minutes": 1.35,
+        "weighted_path_cost": 96.35,
+        "node_count": 8
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 0.582,
+      "duration_minutes": 1.35,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "origin_node": 5214151814,
+    "dest_node": 3148701364,
+    "origin_coordinates": [
+      31.2185,
+      75.7725
+    ],
+    "dest_coordinates": [
+      31.2215,
+      75.7738
+    ],
+    "traffic_scenario": "night_freeflow",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.872,
+        "median_execution_time_ms": 0.794,
+        "nodes_explored": 80,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 98.93,
+        "node_count": 7
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.517,
+        "median_execution_time_ms": 0.509,
+        "nodes_explored": 60,
+        "path_distance_km": 11.879,
+        "estimated_travel_time_minutes": 14.99,
+        "weighted_path_cost": 950.55,
+        "node_count": 58
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.137,
+        "median_execution_time_ms": 0.129,
+        "nodes_explored": 7,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 98.93,
+        "node_count": 7
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 0.338,
+        "median_execution_time_ms": 0.343,
+        "nodes_explored": 26,
+        "path_distance_km": 0.582,
+        "estimated_travel_time_minutes": 1.35,
+        "weighted_path_cost": 87.32,
+        "node_count": 8
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 0.582,
+      "duration_minutes": 1.35,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "origin_node": 5214151814,
+    "dest_node": 3148701364,
+    "origin_coordinates": [
+      31.2185,
+      75.7725
+    ],
+    "dest_coordinates": [
+      31.2215,
+      75.7738
+    ],
+    "traffic_scenario": "emergency_incident",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 1.521,
+        "median_execution_time_ms": 1.528,
+        "nodes_explored": 80,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 211.79,
+        "node_count": 7
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.906,
+        "median_execution_time_ms": 0.966,
+        "nodes_explored": 60,
+        "path_distance_km": 11.879,
+        "estimated_travel_time_minutes": 14.99,
+        "weighted_path_cost": 2060.97,
+        "node_count": 58
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.14,
+        "median_execution_time_ms": 0.143,
+        "nodes_explored": 7,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 211.79,
+        "node_count": 7
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 0.559,
+        "median_execution_time_ms": 0.547,
+        "nodes_explored": 37,
+        "path_distance_km": 0.582,
+        "estimated_travel_time_minutes": 1.35,
+        "weighted_path_cost": 186.34,
+        "node_count": 8
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 0.582,
+      "duration_minutes": 1.35,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "origin_node": 5214151814,
+    "dest_node": 3148701364,
+    "origin_coordinates": [
+      31.2185,
+      75.7725
+    ],
+    "dest_coordinates": [
+      31.2215,
+      75.7738
+    ],
+    "traffic_scenario": "monsoon_flooding",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.809,
+        "median_execution_time_ms": 0.796,
+        "nodes_explored": 80,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 190.48,
+        "node_count": 7
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.558,
+        "median_execution_time_ms": 0.555,
+        "nodes_explored": 60,
+        "path_distance_km": 11.879,
+        "estimated_travel_time_minutes": 14.99,
+        "weighted_path_cost": 1857.2,
+        "node_count": 58
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.108,
+        "median_execution_time_ms": 0.1,
+        "nodes_explored": 7,
+        "path_distance_km": 0.655,
+        "estimated_travel_time_minutes": 1.55,
+        "weighted_path_cost": 190.48,
+        "node_count": 7
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 0.52,
+        "median_execution_time_ms": 0.512,
+        "nodes_explored": 40,
+        "path_distance_km": 0.582,
+        "estimated_travel_time_minutes": 1.35,
+        "weighted_path_cost": 171.54,
+        "node_count": 8
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 0.582,
+      "duration_minutes": 1.35,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "origin_node": 10729337318,
+    "dest_node": 11088488031,
+    "origin_coordinates": [
+      31.2241,
+      75.7695
+    ],
+    "dest_coordinates": [
+      31.2112,
+      75.7891
+    ],
+    "traffic_scenario": "morning_peak",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 9.491,
+        "median_execution_time_ms": 9.719,
+        "nodes_explored": 586,
+        "path_distance_km": 3.711,
+        "estimated_travel_time_minutes": 7.55,
+        "weighted_path_cost": 769.54,
+        "node_count": 20
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 43.532,
+        "median_execution_time_ms": 43.515,
+        "nodes_explored": 2754,
+        "path_distance_km": 81.687,
+        "estimated_travel_time_minutes": 171.54,
+        "weighted_path_cost": 16897.95,
+        "node_count": 641
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.77,
+        "median_execution_time_ms": 0.79,
+        "nodes_explored": 44,
+        "path_distance_km": 3.544,
+        "estimated_travel_time_minutes": 8.02,
+        "weighted_path_cost": 797.48,
+        "node_count": 27
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 15.144,
+        "median_execution_time_ms": 13.768,
+        "nodes_explored": 875,
+        "path_distance_km": 3.204,
+        "estimated_travel_time_minutes": 5.94,
+        "weighted_path_cost": 597.01,
+        "node_count": 23
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 3.204,
+      "duration_minutes": 5.94,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "origin_node": 10729337318,
+    "dest_node": 11088488031,
+    "origin_coordinates": [
+      31.2241,
+      75.7695
+    ],
+    "dest_coordinates": [
+      31.2112,
+      75.7891
+    ],
+    "traffic_scenario": "evening_peak",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 9.125,
+        "median_execution_time_ms": 9.308,
+        "nodes_explored": 586,
+        "path_distance_km": 3.711,
+        "estimated_travel_time_minutes": 7.55,
+        "weighted_path_cost": 833.09,
+        "node_count": 20
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 36.584,
+        "median_execution_time_ms": 38.858,
+        "nodes_explored": 2754,
+        "path_distance_km": 81.687,
+        "estimated_travel_time_minutes": 171.54,
+        "weighted_path_cost": 18448.07,
+        "node_count": 641
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.821,
+        "median_execution_time_ms": 0.779,
+        "nodes_explored": 44,
+        "path_distance_km": 3.544,
+        "estimated_travel_time_minutes": 8.02,
+        "weighted_path_cost": 865.46,
+        "node_count": 27
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 16.819,
+        "median_execution_time_ms": 17.171,
+        "nodes_explored": 880,
+        "path_distance_km": 3.204,
+        "estimated_travel_time_minutes": 5.94,
+        "weighted_path_cost": 649.38,
+        "node_count": 23
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 3.204,
+      "duration_minutes": 5.94,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "origin_node": 10729337318,
+    "dest_node": 11088488031,
+    "origin_coordinates": [
+      31.2241,
+      75.7695
+    ],
+    "dest_coordinates": [
+      31.2112,
+      75.7891
+    ],
+    "traffic_scenario": "midday_normal",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 10.922,
+        "median_execution_time_ms": 11.371,
+        "nodes_explored": 586,
+        "path_distance_km": 3.711,
+        "estimated_travel_time_minutes": 7.55,
+        "weighted_path_cost": 530.38,
+        "node_count": 20
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 31.974,
+        "median_execution_time_ms": 30.505,
+        "nodes_explored": 2754,
+        "path_distance_km": 81.687,
+        "estimated_travel_time_minutes": 171.54,
+        "weighted_path_cost": 11845.06,
+        "node_count": 641
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 1.223,
+        "median_execution_time_ms": 1.011,
+        "nodes_explored": 44,
+        "path_distance_km": 3.544,
+        "estimated_travel_time_minutes": 8.02,
+        "weighted_path_cost": 548.16,
+        "node_count": 27
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 16.91,
+        "median_execution_time_ms": 16.957,
+        "nodes_explored": 654,
+        "path_distance_km": 3.204,
+        "estimated_travel_time_minutes": 5.94,
+        "weighted_path_cost": 412.71,
+        "node_count": 23
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 3.204,
+      "duration_minutes": 5.94,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "origin_node": 10729337318,
+    "dest_node": 11088488031,
+    "origin_coordinates": [
+      31.2241,
+      75.7695
+    ],
+    "dest_coordinates": [
+      31.2112,
+      75.7891
+    ],
+    "traffic_scenario": "night_freeflow",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 9.066,
+        "median_execution_time_ms": 9.159,
+        "nodes_explored": 586,
+        "path_distance_km": 3.711,
+        "estimated_travel_time_minutes": 7.55,
+        "weighted_path_cost": 472.49,
+        "node_count": 20
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 43.099,
+        "median_execution_time_ms": 43.963,
+        "nodes_explored": 2754,
+        "path_distance_km": 81.687,
+        "estimated_travel_time_minutes": 171.54,
+        "weighted_path_cost": 10696.98,
+        "node_count": 641
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.979,
+        "median_execution_time_ms": 0.889,
+        "nodes_explored": 44,
+        "path_distance_km": 3.544,
+        "estimated_travel_time_minutes": 8.02,
+        "weighted_path_cost": 492.14,
+        "node_count": 27
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 14.1,
+        "median_execution_time_ms": 14.102,
+        "nodes_explored": 641,
+        "path_distance_km": 3.204,
+        "estimated_travel_time_minutes": 5.94,
+        "weighted_path_cost": 374.42,
+        "node_count": 23
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 3.204,
+      "duration_minutes": 5.94,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "origin_node": 10729337318,
+    "dest_node": 11088488031,
+    "origin_coordinates": [
+      31.2241,
+      75.7695
+    ],
+    "dest_coordinates": [
+      31.2112,
+      75.7891
+    ],
+    "traffic_scenario": "emergency_incident",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 7.279,
+        "median_execution_time_ms": 6.937,
+        "nodes_explored": 586,
+        "path_distance_km": 3.711,
+        "estimated_travel_time_minutes": 7.55,
+        "weighted_path_cost": 1025.5,
+        "node_count": 20
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 37.341,
+        "median_execution_time_ms": 37.793,
+        "nodes_explored": 2754,
+        "path_distance_km": 81.687,
+        "estimated_travel_time_minutes": 171.54,
+        "weighted_path_cost": 22481.25,
+        "node_count": 641
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.66,
+        "median_execution_time_ms": 0.658,
+        "nodes_explored": 44,
+        "path_distance_km": 3.544,
+        "estimated_travel_time_minutes": 8.02,
+        "weighted_path_cost": 1023.77,
+        "node_count": 27
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 19.647,
+        "median_execution_time_ms": 21.008,
+        "nodes_explored": 933,
+        "path_distance_km": 3.204,
+        "estimated_travel_time_minutes": 5.94,
+        "weighted_path_cost": 805.98,
+        "node_count": 23
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 3.204,
+      "duration_minutes": 5.94,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "origin_node": 10729337318,
+    "dest_node": 11088488031,
+    "origin_coordinates": [
+      31.2241,
+      75.7695
+    ],
+    "dest_coordinates": [
+      31.2112,
+      75.7891
+    ],
+    "traffic_scenario": "monsoon_flooding",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 8.605,
+        "median_execution_time_ms": 8.1,
+        "nodes_explored": 586,
+        "path_distance_km": 3.711,
+        "estimated_travel_time_minutes": 7.55,
+        "weighted_path_cost": 922.68,
+        "node_count": 20
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 42.318,
+        "median_execution_time_ms": 40.252,
+        "nodes_explored": 2754,
+        "path_distance_km": 81.687,
+        "estimated_travel_time_minutes": 171.54,
+        "weighted_path_cost": 20001.62,
+        "node_count": 641
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 0.628,
+        "median_execution_time_ms": 0.62,
+        "nodes_explored": 44,
+        "path_distance_km": 3.544,
+        "estimated_travel_time_minutes": 8.02,
+        "weighted_path_cost": 932.79,
+        "node_count": 27
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 15.002,
+        "median_execution_time_ms": 14.601,
+        "nodes_explored": 941,
+        "path_distance_km": 3.204,
+        "estimated_travel_time_minutes": 5.94,
+        "weighted_path_cost": 721.09,
+        "node_count": 23
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 3.204,
+      "duration_minutes": 5.94,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "origin_node": 13403220104,
+    "dest_node": 12086212688,
+    "origin_coordinates": [
+      31.226,
+      75.779
+    ],
+    "dest_coordinates": [
+      31.214,
+      75.748
+    ],
+    "traffic_scenario": "morning_peak",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 40.235,
+        "median_execution_time_ms": 39.8,
+        "nodes_explored": 3411,
+        "path_distance_km": 18.204,
+        "estimated_travel_time_minutes": 32.42,
+        "weighted_path_cost": 3328.57,
+        "node_count": 43
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 21.417,
+        "median_execution_time_ms": 21.071,
+        "nodes_explored": 1895,
+        "path_distance_km": 82.436,
+        "estimated_travel_time_minutes": 168.46,
+        "weighted_path_cost": 16713.15,
+        "node_count": 551
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 1.722,
+        "median_execution_time_ms": 1.526,
+        "nodes_explored": 77,
+        "path_distance_km": 7.052,
+        "estimated_travel_time_minutes": 17.0,
+        "weighted_path_cost": 1651.13,
+        "node_count": 63
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 41.363,
+        "median_execution_time_ms": 40.104,
+        "nodes_explored": 1915,
+        "path_distance_km": 5.128,
+        "estimated_travel_time_minutes": 9.82,
+        "weighted_path_cost": 962.37,
+        "node_count": 69
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 5.42,
+      "duration_minutes": 9.58,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "origin_node": 13403220104,
+    "dest_node": 12086212688,
+    "origin_coordinates": [
+      31.226,
+      75.779
+    ],
+    "dest_coordinates": [
+      31.214,
+      75.748
+    ],
+    "traffic_scenario": "evening_peak",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 39.18,
+        "median_execution_time_ms": 39.195,
+        "nodes_explored": 3411,
+        "path_distance_km": 18.204,
+        "estimated_travel_time_minutes": 32.42,
+        "weighted_path_cost": 3642.16,
+        "node_count": 43
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 22.836,
+        "median_execution_time_ms": 21.889,
+        "nodes_explored": 1895,
+        "path_distance_km": 82.436,
+        "estimated_travel_time_minutes": 168.46,
+        "weighted_path_cost": 18225.37,
+        "node_count": 551
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 1.232,
+        "median_execution_time_ms": 1.24,
+        "nodes_explored": 77,
+        "path_distance_km": 7.053,
+        "estimated_travel_time_minutes": 17.01,
+        "weighted_path_cost": 1760.64,
+        "node_count": 63
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 35.895,
+        "median_execution_time_ms": 33.603,
+        "nodes_explored": 1954,
+        "path_distance_km": 5.293,
+        "estimated_travel_time_minutes": 9.6,
+        "weighted_path_cost": 1048.33,
+        "node_count": 69
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 5.42,
+      "duration_minutes": 9.58,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "origin_node": 13403220104,
+    "dest_node": 12086212688,
+    "origin_coordinates": [
+      31.226,
+      75.779
+    ],
+    "dest_coordinates": [
+      31.214,
+      75.748
+    ],
+    "traffic_scenario": "midday_normal",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 60.599,
+        "median_execution_time_ms": 60.498,
+        "nodes_explored": 3411,
+        "path_distance_km": 18.204,
+        "estimated_travel_time_minutes": 32.42,
+        "weighted_path_cost": 2308.17,
+        "node_count": 43
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 26.88,
+        "median_execution_time_ms": 22.527,
+        "nodes_explored": 1895,
+        "path_distance_km": 82.436,
+        "estimated_travel_time_minutes": 168.46,
+        "weighted_path_cost": 11767.79,
+        "node_count": 551
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 1.423,
+        "median_execution_time_ms": 1.253,
+        "nodes_explored": 77,
+        "path_distance_km": 7.053,
+        "estimated_travel_time_minutes": 17.01,
+        "weighted_path_cost": 1152.32,
+        "node_count": 63
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 44.418,
+        "median_execution_time_ms": 43.929,
+        "nodes_explored": 1702,
+        "path_distance_km": 5.129,
+        "estimated_travel_time_minutes": 9.82,
+        "weighted_path_cost": 665.65,
+        "node_count": 69
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 5.42,
+      "duration_minutes": 9.58,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "origin_node": 13403220104,
+    "dest_node": 12086212688,
+    "origin_coordinates": [
+      31.226,
+      75.779
+    ],
+    "dest_coordinates": [
+      31.214,
+      75.748
+    ],
+    "traffic_scenario": "night_freeflow",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 58.578,
+        "median_execution_time_ms": 63.102,
+        "nodes_explored": 3411,
+        "path_distance_km": 18.204,
+        "estimated_travel_time_minutes": 32.42,
+        "weighted_path_cost": 2065.5,
+        "node_count": 43
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 22.536,
+        "median_execution_time_ms": 21.78,
+        "nodes_explored": 1895,
+        "path_distance_km": 82.436,
+        "estimated_travel_time_minutes": 168.46,
+        "weighted_path_cost": 10507.88,
+        "node_count": 551
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 2.13,
+        "median_execution_time_ms": 1.858,
+        "nodes_explored": 77,
+        "path_distance_km": 7.052,
+        "estimated_travel_time_minutes": 17.0,
+        "weighted_path_cost": 1045.64,
+        "node_count": 63
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 35.532,
+        "median_execution_time_ms": 37.659,
+        "nodes_explored": 1742,
+        "path_distance_km": 5.293,
+        "estimated_travel_time_minutes": 9.6,
+        "weighted_path_cost": 607.63,
+        "node_count": 69
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 5.42,
+      "duration_minutes": 9.58,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "origin_node": 13403220104,
+    "dest_node": 12086212688,
+    "origin_coordinates": [
+      31.226,
+      75.779
+    ],
+    "dest_coordinates": [
+      31.214,
+      75.748
+    ],
+    "traffic_scenario": "emergency_incident",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 48.498,
+        "median_execution_time_ms": 49.926,
+        "nodes_explored": 3411,
+        "path_distance_km": 18.204,
+        "estimated_travel_time_minutes": 32.42,
+        "weighted_path_cost": 4406.94,
+        "node_count": 43
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 31.87,
+        "median_execution_time_ms": 30.786,
+        "nodes_explored": 1895,
+        "path_distance_km": 82.436,
+        "estimated_travel_time_minutes": 168.46,
+        "weighted_path_cost": 22236.98,
+        "node_count": 551
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 1.608,
+        "median_execution_time_ms": 1.568,
+        "nodes_explored": 77,
+        "path_distance_km": 7.052,
+        "estimated_travel_time_minutes": 17.0,
+        "weighted_path_cost": 2204.87,
+        "node_count": 63
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 36.221,
+        "median_execution_time_ms": 37.336,
+        "nodes_explored": 2019,
+        "path_distance_km": 5.293,
+        "estimated_travel_time_minutes": 9.6,
+        "weighted_path_cost": 1279.1,
+        "node_count": 69
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 5.42,
+      "duration_minutes": 9.58,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "origin_node": 13403220104,
+    "dest_node": 12086212688,
+    "origin_coordinates": [
+      31.226,
+      75.779
+    ],
+    "dest_coordinates": [
+      31.214,
+      75.748
+    ],
+    "traffic_scenario": "monsoon_flooding",
+    "algorithms": {
+      "BFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 53.122,
+        "median_execution_time_ms": 51.971,
+        "nodes_explored": 3411,
+        "path_distance_km": 18.204,
+        "estimated_travel_time_minutes": 32.42,
+        "weighted_path_cost": 3943.29,
+        "node_count": 43
+      },
+      "DFS": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 23.125,
+        "median_execution_time_ms": 22.126,
+        "nodes_explored": 1895,
+        "path_distance_km": 82.436,
+        "estimated_travel_time_minutes": 168.46,
+        "weighted_path_cost": 19757.48,
+        "node_count": 551
+      },
+      "Greedy_Best_First": {
+        "success": true,
+        "is_optimal": false,
+        "mean_execution_time_ms": 2.114,
+        "median_execution_time_ms": 1.908,
+        "nodes_explored": 77,
+        "path_distance_km": 7.052,
+        "estimated_travel_time_minutes": 17.0,
+        "weighted_path_cost": 1903.01,
+        "node_count": 63
+      },
+      "A_Star": {
+        "success": true,
+        "is_optimal": true,
+        "mean_execution_time_ms": 40.237,
+        "median_execution_time_ms": 37.824,
+        "nodes_explored": 1960,
+        "path_distance_km": 5.128,
+        "estimated_travel_time_minutes": 9.82,
+        "weighted_path_cost": 1135.84,
+        "node_count": 69
+      }
+    },
+    "external_delhivery_reference": {
+      "provider": "local_osm_graph",
+      "is_fallback": true,
+      "distance_km": 5.42,
+      "duration_minutes": 9.58,
+      "note": "External commercial logistics routing reference (separate from local DSA timing)."
+    }
+  }
+]

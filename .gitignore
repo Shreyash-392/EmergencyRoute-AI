@@ -1,0 +1,73 @@
+# ==============================================================================
+# SECRETS, CREDENTIALS & API KEYS (STRICT ANTI-LEAK PROTECTION)
+# ==============================================================================
+.env
+.env.*
+!.env.example
+*.env
+*.key
+*.pem
+*.cert
+*.crt
+*.pfx
+*.p12
+*.secret
+*.token
+*credentials*.json
+secrets*.json
+api_key*.txt
+api_keys/
+id_rsa*
+id_ed25519*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Logs
+logs/*.log
+*.log
+
+# OSM Cache (Optional: comment out if raw cache is versioned)
+# data/raw/osm/*.json
+
+# IDE & System
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,194 @@
+[
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "scenario": "morning_peak",
+    "astar_travel_time_minutes": 8.05,
+    "astar_distance_km": 8.021,
+    "nodes_explored": 1469,
+    "delhivery_duration_minutes": 8.05
+  },
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "scenario": "evening_peak",
+    "astar_travel_time_minutes": 8.05,
+    "astar_distance_km": 8.021,
+    "nodes_explored": 1543,
+    "delhivery_duration_minutes": 8.05
+  },
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "scenario": "midday_normal",
+    "astar_travel_time_minutes": 8.05,
+    "astar_distance_km": 8.025,
+    "nodes_explored": 1098,
+    "delhivery_duration_minutes": 8.05
+  },
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "scenario": "night_freeflow",
+    "astar_travel_time_minutes": 8.05,
+    "astar_distance_km": 8.021,
+    "nodes_explored": 976,
+    "delhivery_duration_minutes": 8.05
+  },
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "scenario": "emergency_incident",
+    "astar_travel_time_minutes": 8.05,
+    "astar_distance_km": 8.025,
+    "nodes_explored": 1640,
+    "delhivery_duration_minutes": 8.05
+  },
+  {
+    "route_name": "Civil Hospital to LPU Gate (Arterial Corridor)",
+    "scenario": "monsoon_flooding",
+    "astar_travel_time_minutes": 8.05,
+    "astar_distance_km": 8.025,
+    "nodes_explored": 1571,
+    "delhivery_duration_minutes": 8.05
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "scenario": "morning_peak",
+    "astar_travel_time_minutes": 1.35,
+    "astar_distance_km": 0.582,
+    "nodes_explored": 32,
+    "delhivery_duration_minutes": 1.35
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "scenario": "evening_peak",
+    "astar_travel_time_minutes": 1.35,
+    "astar_distance_km": 0.582,
+    "nodes_explored": 38,
+    "delhivery_duration_minutes": 1.35
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "scenario": "midday_normal",
+    "astar_travel_time_minutes": 1.35,
+    "astar_distance_km": 0.582,
+    "nodes_explored": 25,
+    "delhivery_duration_minutes": 1.35
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "scenario": "night_freeflow",
+    "astar_travel_time_minutes": 1.35,
+    "astar_distance_km": 0.582,
+    "nodes_explored": 26,
+    "delhivery_duration_minutes": 1.35
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "scenario": "emergency_incident",
+    "astar_travel_time_minutes": 1.35,
+    "astar_distance_km": 0.582,
+    "nodes_explored": 37,
+    "delhivery_duration_minutes": 1.35
+  },
+  {
+    "route_name": "Railway Station to Central Bus Stand (Urban Core)",
+    "scenario": "monsoon_flooding",
+    "astar_travel_time_minutes": 1.35,
+    "astar_distance_km": 0.582,
+    "nodes_explored": 40,
+    "delhivery_duration_minutes": 1.35
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "scenario": "morning_peak",
+    "astar_travel_time_minutes": 5.94,
+    "astar_distance_km": 3.204,
+    "nodes_explored": 875,
+    "delhivery_duration_minutes": 5.94
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "scenario": "evening_peak",
+    "astar_travel_time_minutes": 5.94,
+    "astar_distance_km": 3.204,
+    "nodes_explored": 880,
+    "delhivery_duration_minutes": 5.94
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "scenario": "midday_normal",
+    "astar_travel_time_minutes": 5.94,
+    "astar_distance_km": 3.204,
+    "nodes_explored": 654,
+    "delhivery_duration_minutes": 5.94
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "scenario": "night_freeflow",
+    "astar_travel_time_minutes": 5.94,
+    "astar_distance_km": 3.204,
+    "nodes_explored": 641,
+    "delhivery_duration_minutes": 5.94
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "scenario": "emergency_incident",
+    "astar_travel_time_minutes": 5.94,
+    "astar_distance_km": 3.204,
+    "nodes_explored": 933,
+    "delhivery_duration_minutes": 5.94
+  },
+  {
+    "route_name": "Hanumangarh Chowk to NH44 Bypass (Highway Access)",
+    "scenario": "monsoon_flooding",
+    "astar_travel_time_minutes": 5.94,
+    "astar_distance_km": 3.204,
+    "nodes_explored": 941,
+    "delhivery_duration_minutes": 5.94
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "scenario": "morning_peak",
+    "astar_travel_time_minutes": 9.82,
+    "astar_distance_km": 5.128,
+    "nodes_explored": 1915,
+    "delhivery_duration_minutes": 9.58
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "scenario": "evening_peak",
+    "astar_travel_time_minutes": 9.6,
+    "astar_distance_km": 5.293,
+    "nodes_explored": 1954,
+    "delhivery_duration_minutes": 9.58
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "scenario": "midday_normal",
+    "astar_travel_time_minutes": 9.82,
+    "astar_distance_km": 5.129,
+    "nodes_explored": 1702,
+    "delhivery_duration_minutes": 9.58
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "scenario": "night_freeflow",
+    "astar_travel_time_minutes": 9.6,
+    "astar_distance_km": 5.293,
+    "nodes_explored": 1742,
+    "delhivery_duration_minutes": 9.58
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "scenario": "emergency_incident",
+    "astar_travel_time_minutes": 9.6,
+    "astar_distance_km": 5.293,
+    "nodes_explored": 2019,
+    "delhivery_duration_minutes": 9.58
+  },
+  {
+    "route_name": "Model Town to Hadiabad Market (Cross-Town)",
+    "scenario": "monsoon_flooding",
+    "astar_travel_time_minutes": 9.82,
+    "astar_distance_km": 5.128,
+    "nodes_explored": 1960,
+    "delhivery_duration_minutes": 9.58
+  }
+]

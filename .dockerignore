@@ -1,0 +1,35 @@
+# Secrets & Credentials (NEVER bake into image)
+.env
+.env.*
+!.env.example
+*.env
+*.key
+*.pem
+*.cert
+*.crt
+*.token
+*.secret
+api_key*.txt
+api_keys/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+venv/
+env/
+
+# Node artifacts
+node_modules/
+frontend/node_modules/
+
+# Git & IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+*.log

@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "is_valid": true,
+  "graph_type": "MultiDiGraph",
+  "is_directed": true,
+  "is_multidigraph": true,
+  "nodes_count": 3975,
+  "edges_count": 10229,
+  "geographic_bounds": {
+    "min_latitude": 31.169305,
+    "max_latitude": 31.277028,
+    "min_longitude": 75.707801,
+    "max_longitude": 75.833874,
+    "center": {
+      "latitude": 31.223167,
+      "longitude": 75.770838
+    }
+  },
+  "attributes": {
+    "total_length_km": 1276.16,
+    "mean_edge_length_meters": 124.76,
+    "min_edge_length_meters": 0.52,
+    "max_edge_length_meters": 3596.55,
+    "mean_travel_time_seconds": 17.88,
+    "mean_speed_kph": 24.89,
+    "missing_length_count": 0,
+    "missing_travel_time_count": 0,
+    "observed_speed_limit_edges": 0,
+    "imputed_speed_limit_edges": 10229,
+    "oneway_edges": 199,
+    "twoway_edges": 10030,
+    "parallel_edge_pairs": 30,
+    "total_parallel_edges": 60
+  },
+  "connectivity": {
+    "weakly_connected_components": 7,
+    "largest_wcc_nodes": 3959,
+    "largest_wcc_percentage": 99.6,
+    "strongly_connected_components": 10,
+    "largest_scc_nodes": 3956,
+    "largest_scc_percentage": 99.52,
+    "isolated_nodes_count": 4
+  },
+  "notes": [
+    "Network extracted as directed MultiDiGraph preserving one-ways and parallel edge keys.",
+    "Disconnected components are preserved and not pruned automatically, as required.",
+    "Speed limits distinguish observed OSM tags from regional highway classification imputation.",
+    "Travel times represent baseline free-flow times; live traffic adjustments handled dynamically."
+  ]
+}

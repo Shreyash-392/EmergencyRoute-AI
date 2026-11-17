@@ -1,0 +1,23 @@
+services:
+  emergencyroute-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: emergencyroute-ai:latest
+    container_name: emergencyroute_ai_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - LOG_LEVEL=INFO
+      - CORS_ORIGINS=*
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

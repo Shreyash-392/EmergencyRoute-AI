@@ -1,0 +1,920 @@
+import React, { useEffect, useRef, useState } from 'react';
+import L from 'leaflet';
+import {
+  Activity,
+  CheckCircle2,
+  Crosshair,
+  ExternalLink,
+  Eye,
+  Gauge,
+  Key,
+  Layers,
+  Moon,
+  Radio,
+  RotateCcw,
+  Sparkles,
+  Sun,
+  TrafficCone,
+  X,
+} from 'lucide-react';
+import { tomtomService, TomTomFlowSegment } from '../../services/tomtom';
+import {
+  AlgorithmResult,
+  EmergencyIncident,
+  OSRMRouteResponse,
+  Vehicle,
+} from '../../types';
+
+export interface RoadSegmentFeature {
+  id?: string;
+  name: string;
+  coordinates: [number, number][];
+  reason?: string;
+  source?: string;
+  status?: string;
+  reported_at?: string;
+}
+
+interface PhagwaraMapProps {
+  activeRoute?: AlgorithmResult | null;
+  comparisonRoutes?: Record<string, AlgorithmResult> | null;
+  osrmRoute?: OSRMRouteResponse | null;
+  routeMode?: 'local_astar' | 'osrm' | 'compare_both';
+  vehicles?: Vehicle[];
+  incidents?: EmergencyIncident[];
+  closedEdges?: [number, number, number][];
+  closedRoadSegments?: RoadSegmentFeature[];
+  unconfirmedRestrictions?: RoadSegmentFeature[];
+  onSelectCoordinate?: (lat: number, lng: number) => void;
+  selectedOrigin?: [number, number] | null;
+  selectedDestination?: [number, number] | null;
+  onOriginChange?: (lat: number, lng: number) => void;
+  onDestinationChange?: (lat: number, lng: number) => void;
+  pickMode?: 'none' | 'origin' | 'destination';
+  onCancelPickMode?: () => void;
+}
+
+const PHAGWARA_CENTER: [number, number] = [31.2231, 75.7708];
+
+type BaseMapType = 'osm' | 'tomtom_light' | 'tomtom_night' | 'tomtom_sat';
+
+export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
+  activeRoute,
+  comparisonRoutes,
+  osrmRoute,
+  routeMode = 'local_astar',
+  vehicles = [],
+  incidents = [],
+  closedRoadSegments = [],
+  unconfirmedRestrictions = [],
+  onSelectCoordinate,
+  selectedOrigin,
+  selectedDestination,
+  onOriginChange,
+  onDestinationChange,
+  pickMode = 'none',
+  onCancelPickMode,
+}) => {
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const leafletMapRef = useRef<L.Map | null>(null);
+  const baseTileLayerRef = useRef<L.TileLayer | null>(null);
+  const trafficFlowLayerRef = useRef<L.TileLayer | null>(null);
+  const trafficIncidentsLayerRef = useRef<L.TileLayer | null>(null);
+  const layersGroupRef = useRef<L.LayerGroup | null>(null);
+
+  // TomTom UI State (TomTom Night is default map viewer)
+  const [baseMap, setBaseMap] = useState<BaseMapType>('tomtom_night');
+  const [showTrafficFlow, setShowTrafficFlow] = useState<boolean>(false);
+  const [showIncidentsLayer, setShowIncidentsLayer] = useState<boolean>(false);
+  const [isKeyConfigured, setIsKeyConfigured] = useState<boolean>(tomtomService.isConfigured());
+  const [statusNotice, setStatusNotice] = useState<string | null>(null);
+
+  // Feature 4: Live Traffic Flow Segment Inspector State
+  const [inspectorMode, setInspectorMode] = useState<boolean>(false);
+  const [inspectedSegment, setInspectedSegment] = useState<TomTomFlowSegment | null>(null);
+  const [inspectedLatLng, setInspectedLatLng] = useState<[number, number] | null>(null);
+  const [inspectingLoading, setInspectingLoading] = useState<boolean>(false);
+
+  // Listen to key changes
+  useEffect(() => {
+    const handleKeyUpdate = () => {
+      const configured = tomtomService.isConfigured();
+      setIsKeyConfigured(configured);
+      if (configured) {
+        setBaseMap((prev) => (prev === 'osm' ? 'tomtom_light' : prev));
+      }
+    };
+    window.addEventListener('tomtom_key_updated', handleKeyUpdate);
+    return () => window.removeEventListener('tomtom_key_updated', handleKeyUpdate);
+  }, []);
+
+  // Map Initialization & Click Handler
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+
+    if (!leafletMapRef.current) {
+      const map = L.map(mapContainerRef.current, {
+        center: PHAGWARA_CENTER,
+        zoom: 13,
+        zoomControl: false,
+      });
+
+      L.control.zoom({ position: 'topright' }).addTo(map);
+
+      // Default base layer: TomTom Light if configured, otherwise fallback to OSM
+      const initialTomTomUrl = tomtomService.isConfigured()
+        ? tomtomService.getTomTomLightTileUrl()
+        : null;
+
+      const initialBaseLayer = initialTomTomUrl
+        ? L.tileLayer(initialTomTomUrl, {
+            attribution: '&copy; TomTom Maps | EmergencyRoute AI',
+            maxZoom: 19,
+          })
+        : L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors | EmergencyRoute AI',
+            maxZoom: 19,
+            subdomains: ['a', 'b', 'c'],
+          });
+
+      initialBaseLayer.addTo(map);
+      baseTileLayerRef.current = initialBaseLayer;
+      layersGroupRef.current = L.layerGroup().addTo(map);
+      leafletMapRef.current = map;
+      setTimeout(() => map.invalidateSize(), 100);
+    }
+
+    const map = leafletMapRef.current;
+    if (!map) return;
+
+    const handleClick = async (e: L.LeafletMouseEvent) => {
+      if (pickMode !== 'none') {
+        if (onSelectCoordinate) onSelectCoordinate(e.latlng.lat, e.latlng.lng);
+        return;
+      }
+
+      if (inspectorMode && isKeyConfigured) {
+        setInspectingLoading(true);
+        setInspectedLatLng([e.latlng.lat, e.latlng.lng]);
+        try {
+          const data = await tomtomService.getFlowSegmentData(e.latlng.lat, e.latlng.lng);
+          setInspectedSegment(data);
+        } catch {
+          setInspectedSegment(null);
+        } finally {
+          setInspectingLoading(false);
+        }
+        return;
+      }
+
+      if (onSelectCoordinate) {
+        onSelectCoordinate(e.latlng.lat, e.latlng.lng);
+      }
+    };
+
+    map.off('click');
+    map.on('click', handleClick);
+
+    return () => {
+      map.off('click', handleClick);
+    };
+  }, [onSelectCoordinate, pickMode, inspectorMode, isKeyConfigured]);
+
+  // Handle Base Map Switching (Features 1 & 5: OSM, Light, Night, Satellite)
+  useEffect(() => {
+    const map = leafletMapRef.current;
+    if (!map) return;
+
+    if (baseTileLayerRef.current) {
+      map.removeLayer(baseTileLayerRef.current);
+    }
+
+    if (baseMap === 'tomtom_night') {
+      if (isKeyConfigured) {
+        const nightUrl = tomtomService.getTomTomNightTileUrl();
+        if (nightUrl) {
+          baseTileLayerRef.current = L.tileLayer(nightUrl, {
+            attribution: '&copy; TomTom Night Maps | EmergencyRoute AI',
+            maxZoom: 19,
+          }).addTo(map);
+          return;
+        }
+      }
+      // High-performance dark map fallback
+      baseTileLayerRef.current = L.tileLayer(
+        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        {
+          attribution: '&copy; CartoDB &copy; OpenStreetMap | EmergencyRoute AI',
+          maxZoom: 19,
+          subdomains: ['a', 'b', 'c', 'd'],
+        }
+      ).addTo(map);
+      return;
+    }
+
+    if (baseMap === 'tomtom_light' && isKeyConfigured) {
+      const tomtomUrl = tomtomService.getTomTomLightTileUrl();
+      if (tomtomUrl) {
+        baseTileLayerRef.current = L.tileLayer(tomtomUrl, {
+          attribution: '&copy; TomTom Maps | EmergencyRoute AI',
+          maxZoom: 19,
+        }).addTo(map);
+        return;
+      }
+    }
+
+    if (baseMap === 'tomtom_sat' && isKeyConfigured) {
+      const satUrl = tomtomService.getTomTomSatelliteTileUrl();
+      if (satUrl) {
+        baseTileLayerRef.current = L.tileLayer(satUrl, {
+          attribution: '&copy; TomTom Satellite | EmergencyRoute AI',
+          maxZoom: 19,
+        }).addTo(map);
+        return;
+      }
+    }
+
+    // Default Fallback: Dark Map
+    baseTileLayerRef.current = L.tileLayer(
+      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      {
+        attribution: '&copy; CartoDB &copy; OpenStreetMap | EmergencyRoute AI',
+        maxZoom: 19,
+        subdomains: ['a', 'b', 'c', 'd'],
+      }
+    ).addTo(map);
+  }, [baseMap, isKeyConfigured]);
+
+  // Handle TomTom Live Traffic Flow Layer
+  useEffect(() => {
+    const map = leafletMapRef.current;
+    if (!map) return;
+
+    if (showTrafficFlow && isKeyConfigured) {
+      const flowUrl = tomtomService.getTrafficFlowTileUrl();
+      if (flowUrl) {
+        if (!trafficFlowLayerRef.current) {
+          trafficFlowLayerRef.current = L.tileLayer(flowUrl, {
+            opacity: 0.75,
+            maxZoom: 19,
+            attribution: 'Traffic &copy; TomTom Real-Time Flow',
+          });
+        }
+        trafficFlowLayerRef.current.addTo(map);
+      }
+    } else {
+      if (trafficFlowLayerRef.current && map.hasLayer(trafficFlowLayerRef.current)) {
+        map.removeLayer(trafficFlowLayerRef.current);
+      }
+    }
+  }, [showTrafficFlow, isKeyConfigured]);
+
+  // Handle TomTom Traffic Incidents Layer
+  useEffect(() => {
+    const map = leafletMapRef.current;
+    if (!map) return;
+
+    if (showIncidentsLayer && isKeyConfigured) {
+      const incUrl = tomtomService.getTrafficIncidentsTileUrl();
+      if (incUrl) {
+        if (!trafficIncidentsLayerRef.current) {
+          trafficIncidentsLayerRef.current = L.tileLayer(incUrl, {
+            maxZoom: 19,
+            attribution: 'Incidents &copy; TomTom',
+          });
+        }
+        trafficIncidentsLayerRef.current.addTo(map);
+      }
+    } else {
+      if (trafficIncidentsLayerRef.current && map.hasLayer(trafficIncidentsLayerRef.current)) {
+        map.removeLayer(trafficIncidentsLayerRef.current);
+      }
+    }
+  }, [showIncidentsLayer, isKeyConfigured]);
+
+  // Render Vector Layers & Routes
+  useEffect(() => {
+    const map = leafletMapRef.current;
+    const layerGroup = layersGroupRef.current;
+    if (!map || !layerGroup) return;
+
+    map.invalidateSize();
+    layerGroup.clearLayers();
+
+    // 1. Render Recorded Closed Roads (Red #ef4444)
+    closedRoadSegments.forEach((seg) => {
+      if (seg.coordinates && seg.coordinates.length > 1) {
+        const poly = L.polyline(seg.coordinates, {
+          color: '#ef4444',
+          weight: 6,
+          opacity: 0.95,
+        }).addTo(layerGroup);
+
+        poly.bindPopup(`
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; line-height: 1.45; color: #1e293b;">
+            <div style="font-weight: 700; color: #dc2626; font-size: 13px;">${seg.name || 'Recorded Road Closure'}</div>
+            <span style="display: inline-block; font-size: 9px; font-weight: 700; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 4px; padding: 1px 5px; margin: 3px 0 6px 0;">
+              ${seg.source || 'OSM RESTRICTION'}
+            </span><br/>
+            Status: <b style="color: #dc2626;">CLOSED / IMPASSABLE</b><br/>
+            Reason: <b>${seg.reason || 'Road impassable / barrier'}</b><br/>
+            Last Updated: <b>${seg.reported_at || 'Current session'}</b>
+          </div>
+        `);
+      }
+    });
+
+    // 2. Render Restrictions Requiring Further Confirmation (Orange #f97316)
+    unconfirmedRestrictions.forEach((restr) => {
+      if (restr.coordinates && restr.coordinates.length > 1) {
+        const poly = L.polyline(restr.coordinates, {
+          color: '#f97316',
+          weight: 5,
+          dashArray: '6, 6',
+          opacity: 0.9,
+        }).addTo(layerGroup);
+
+        poly.bindPopup(`
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; line-height: 1.45; color: #1e293b;">
+            <div style="font-weight: 700; color: #ea580c; font-size: 13px;">${restr.name || 'Road Restriction'}</div>
+            <span style="display: inline-block; font-size: 9px; font-weight: 700; background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; border-radius: 4px; padding: 1px 5px; margin: 3px 0 6px 0;">
+              RESTRICTION REPORT
+            </span><br/>
+            Status: <b style="color: #ea580c;">REQUIRES CONFIRMATION</b><br/>
+            Detail: <b>${restr.reason || 'Reported obstruction or construction notice'}</b><br/>
+            Source: <b>${restr.source || 'USER REPORTED'}</b>
+          </div>
+        `);
+      }
+    });
+
+    // 3. Render Recommended Route (Local A* - Green #10b981)
+    if (activeRoute && activeRoute.coordinates && activeRoute.coordinates.length > 1) {
+      const poly = L.polyline(activeRoute.coordinates, {
+        color: '#10b981',
+        weight: 6,
+        opacity: 0.95,
+      }).addTo(layerGroup);
+
+      poly.bindPopup(`
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; line-height: 1.45; color: #1e293b;">
+          <div style="font-weight: 700; color: #059669; font-size: 13px;">Recommended Route (EmergencyRoute AI)</div>
+          <span style="display: inline-block; font-size: 9px; font-weight: 700; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; border-radius: 4px; padding: 1px 5px; margin: 3px 0 6px 0;">OSM DATA</span><br/>
+          Distance: <b>${activeRoute.path_distance_km} km</b><br/>
+          Est. Travel Time: <b>${activeRoute.estimated_travel_time_minutes} min</b> <span style="color: #64748b; font-size: 10px;">(Speed Limit Estimate)</span><br/>
+          Nodes Explored: <b>${activeRoute.nodes_explored}</b>
+        </div>
+      `);
+      map.fitBounds(poly.getBounds(), { padding: [40, 40] });
+    }
+
+    // 4. Render Alternative Route (OSRM - Blue #2563eb)
+    if (osrmRoute && osrmRoute.success && osrmRoute.route && osrmRoute.route.coordinates?.length) {
+      const isOsrmPrimary = routeMode === 'osrm';
+      const osrmPoly = L.polyline(osrmRoute.route.coordinates, {
+        color: '#2563eb',
+        weight: isOsrmPrimary ? 6 : 5,
+        dashArray: isOsrmPrimary ? undefined : '8, 6',
+        opacity: 0.9,
+      }).addTo(layerGroup);
+
+      osrmPoly.bindPopup(`
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; line-height: 1.45; color: #1e293b;">
+          <div style="font-weight: 700; color: #1d4ed8; font-size: 13px;">Alternative Route (OSRM)</div>
+          <span style="display: inline-block; font-size: 9px; font-weight: 700; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 4px; padding: 1px 5px; margin: 3px 0 6px 0;">OSRM RESPONSE</span><br/>
+          Distance: <b>${osrmRoute.route.distance_km} km</b> (${osrmRoute.route.distance_meters} m)<br/>
+          Estimated Duration: <b>${osrmRoute.route.duration_minutes} min</b> (${osrmRoute.route.duration_seconds} s)<br/>
+          <span style="font-size: 10px; color: #64748b; display: block; margin-top: 4px;">
+            External routing-engine free-flow estimate; not live traffic.
+          </span>
+        </div>
+      `);
+
+      if (isOsrmPrimary || (!activeRoute?.coordinates?.length)) {
+        map.fitBounds(osrmPoly.getBounds(), { padding: [40, 40] });
+      }
+    }
+
+    // 5. Render Comparison Routes if present
+    if (comparisonRoutes) {
+      if (comparisonRoutes.BFS?.coordinates?.length) {
+        L.polyline(comparisonRoutes.BFS.coordinates, {
+          color: '#06b6d4',
+          weight: 4,
+          dashArray: '6, 6',
+          opacity: 0.8,
+        })
+          .addTo(layerGroup)
+          .bindPopup('<b>BFS Route (Fewest Road Segments)</b>');
+      }
+
+      if (comparisonRoutes.Greedy_Best_First?.coordinates?.length) {
+        L.polyline(comparisonRoutes.Greedy_Best_First.coordinates, {
+          color: '#f59e0b',
+          weight: 4,
+          dashArray: '4, 4',
+          opacity: 0.8,
+        })
+          .addTo(layerGroup)
+          .bindPopup('<b>Greedy Best-First Route</b>');
+      }
+
+      if (comparisonRoutes.DFS?.coordinates?.length) {
+        L.polyline(comparisonRoutes.DFS.coordinates, {
+          color: '#8b5cf6',
+          weight: 3,
+          dashArray: '2, 6',
+          opacity: 0.7,
+        })
+          .addTo(layerGroup)
+          .bindPopup('<b>DFS Route (Depth First)</b>');
+      }
+    }
+
+    // 6. Connected Emergency Vehicles
+    vehicles.forEach((v) => {
+      let iconHtml = '🚑';
+      if (v.vehicle_type === 'fire_engine') iconHtml = '🚒';
+      if (v.vehicle_type === 'police') iconHtml = '🚓';
+
+      const statusColor = v.status === 'available' ? '#10b981' : '#f59e0b';
+
+      const customIcon = L.divIcon({
+        className: 'vehicle-marker',
+        html: `
+          <div style="
+            background: white; border: 2px solid ${statusColor};
+            border-radius: 50%; width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+          ">
+            ${iconHtml}
+          </div>
+        `,
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+      });
+
+      L.marker([v.current_lat, v.current_lng], { icon: customIcon })
+        .addTo(layerGroup)
+        .bindPopup(`
+          <div style="font-family: sans-serif; font-size: 12px; color: #1e293b;">
+            <b>${v.call_sign}</b> (${v.vehicle_type.toUpperCase()})<br/>
+            Status: <span style="color: ${statusColor}; font-weight: bold;">${v.status.toUpperCase()}</span><br/>
+            Base: ${v.base_station}
+          </div>
+        `);
+    });
+
+    // 7. Emergency Incident Markers
+    incidents.forEach((inc) => {
+      const isCrit = inc.priority === 'critical';
+      const bg = isCrit ? '#ef4444' : '#f97316';
+
+      const incidentIcon = L.divIcon({
+        className: 'incident-marker',
+        html: `
+          <div style="
+            background: ${bg}; color: white;
+            border-radius: 50%; width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: bold; box-shadow: 0 2px 8px rgba(239,68,68,0.35);
+            border: 2px solid white;
+          ">
+            !
+          </div>
+        `,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+      });
+
+      L.marker([inc.lat, inc.lng], { icon: incidentIcon })
+        .addTo(layerGroup)
+        .bindPopup(`
+          <div style="font-family: sans-serif; font-size: 12px; line-height: 1.45; color: #1e293b;">
+            <b style="color: ${bg}; font-size: 13px;">${inc.title}</b><br/>
+            <span style="font-size: 9px; font-weight: 700; background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; border-radius: 4px; padding: 1px 5px; margin: 3px 0 6px 0; display: inline-block;">USER REPORTED</span><br/>
+            <span style="color: #64748b; font-size: 11px;">Intake: <b>Manual Report</b></span><br/>
+            Priority: <b style="color: ${bg};">${inc.priority.toUpperCase()}</b><br/>
+            Category: <b>${inc.incident_type.replace('_', ' ').toUpperCase()}</b><br/>
+            Status: <span style="color: #d97706; font-weight: bold;">${inc.status.toUpperCase()}</span><br/>
+            <span style="color: #64748b; display: block; margin-top: 4px; font-size: 10px;">
+              User-submitted report. Not automatically verified by emergency authorities.
+            </span>
+          </div>
+        `);
+    });
+
+    // 8. Origin / Destination Markers (Draggable)
+    if (selectedOrigin) {
+      const origIcon = L.divIcon({
+        className: 'origin-marker',
+        html: `
+          <div style="
+            background: #2563eb; width: 24px; height: 24px; border-radius: 50%;
+            border: 3px solid white; box-shadow: 0 3px 8px rgba(37,99,235,0.45);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: bold; font-size: 12px; cursor: grab;
+          ">
+            A
+          </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+      });
+
+      const origMarker = L.marker(selectedOrigin, { icon: origIcon, draggable: true })
+        .addTo(layerGroup)
+        .bindPopup(`
+          <div style="font-family: sans-serif; font-size: 12px; color: #1e293b;">
+            <b style="color: #2563eb;">Starting Point (Origin)</b><br/>
+            Lat: ${selectedOrigin[0].toFixed(5)}, Lng: ${selectedOrigin[1].toFixed(5)}<br/>
+            <span style="color: #64748b; font-size: 10px; margin-top: 3px; display: block;">
+              &bull; Drag pin anywhere across Phagwara to reposition
+            </span>
+          </div>
+        `);
+
+      origMarker.on('dragend', (e: any) => {
+        const { lat, lng } = e.target.getLatLng();
+        if (onOriginChange) onOriginChange(lat, lng);
+      });
+    }
+
+    if (selectedDestination) {
+      const destIcon = L.divIcon({
+        className: 'dest-marker',
+        html: `
+          <div style="
+            background: #ef4444; width: 24px; height: 24px; border-radius: 50%;
+            border: 3px solid white; box-shadow: 0 3px 8px rgba(239,68,68,0.45);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: bold; font-size: 12px; cursor: grab;
+          ">
+            B
+          </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+      });
+
+      const destMarker = L.marker(selectedDestination, { icon: destIcon, draggable: true })
+        .addTo(layerGroup)
+        .bindPopup(`
+          <div style="font-family: sans-serif; font-size: 12px; color: #1e293b;">
+            <b style="color: #dc2626;">Destination</b><br/>
+            Lat: ${selectedDestination[0].toFixed(5)}, Lng: ${selectedDestination[1].toFixed(5)}<br/>
+            <span style="color: #64748b; font-size: 10px; margin-top: 3px; display: block;">
+              &bull; Drag pin anywhere across Phagwara to reposition
+            </span>
+          </div>
+        `);
+
+      destMarker.on('dragend', (e: any) => {
+        const { lat, lng } = e.target.getLatLng();
+        if (onDestinationChange) onDestinationChange(lat, lng);
+      });
+    }
+
+    // 9. Inspected Flow Segment (Feature 4 Highlight)
+    if (inspectedSegment && inspectedSegment.coordinates && inspectedSegment.coordinates.length > 0) {
+      const glowLine = L.polyline(inspectedSegment.coordinates, {
+        color: '#06b6d4',
+        weight: 8,
+        opacity: 0.9,
+      }).addTo(layerGroup);
+
+      glowLine.bindPopup(`
+        <div style="font-family: sans-serif; font-size: 12px; color: #0f172a;">
+          <b style="color: #0284c7;">Inspected Road Segment</b><br/>
+          Current Speed: <b>${inspectedSegment.currentSpeed} km/h</b><br/>
+          Free Flow Speed: <b>${inspectedSegment.freeFlowSpeed} km/h</b><br/>
+          Delay: <b>+${inspectedSegment.delaySeconds}s</b> (${inspectedSegment.congestionPercent}% Congestion)<br/>
+          Status: <b>${inspectedSegment.roadClosure ? 'CLOSED' : 'OPEN'}</b>
+        </div>
+      `);
+    }
+
+    if (inspectedLatLng) {
+      const inspectIcon = L.divIcon({
+        className: 'inspect-marker',
+        html: `
+          <div style="
+            background: #06b6d4; width: 14px; height: 14px; border-radius: 50%;
+            border: 2px solid white; box-shadow: 0 0 10px #06b6d4;
+          "></div>
+        `,
+        iconSize: [14, 14],
+        iconAnchor: [7, 7],
+      });
+      L.marker(inspectedLatLng, { icon: inspectIcon }).addTo(layerGroup);
+    }
+  }, [
+    activeRoute,
+    comparisonRoutes,
+    osrmRoute,
+    routeMode,
+    vehicles,
+    incidents,
+    closedRoadSegments,
+    unconfirmedRestrictions,
+    selectedOrigin,
+    selectedDestination,
+    onOriginChange,
+    onDestinationChange,
+    inspectedSegment,
+    inspectedLatLng,
+  ]);
+
+  const handleResetView = () => {
+    if (leafletMapRef.current) {
+      leafletMapRef.current.setView(PHAGWARA_CENTER, 13);
+      leafletMapRef.current.invalidateSize();
+    }
+  };
+
+  const showNotice = (msg: string) => {
+    setStatusNotice(msg);
+    setTimeout(() => setStatusNotice(null), 4000);
+  };
+
+  const handleTrafficToggle = () => {
+    if (!isKeyConfigured) {
+      showNotice('Live traffic telemetry is in standby. Configure TOMTOM_API_KEY in server .env to stream real-time flow.');
+      return;
+    }
+    setShowTrafficFlow(!showTrafficFlow);
+  };
+
+  const handleIncidentsToggle = () => {
+    if (!isKeyConfigured) {
+      showNotice('Incident stream is in standby. Configure TOMTOM_API_KEY in server .env to stream real-time incidents.');
+      return;
+    }
+    setShowIncidentsLayer(!showIncidentsLayer);
+  };
+
+  const handleBaseMapSelect = (type: BaseMapType) => {
+    if ((type === 'tomtom_light' || type === 'tomtom_sat' || type === 'tomtom_night') && !isKeyConfigured) {
+      showNotice('Custom TomTom base tiles require server-side TOMTOM_API_KEY. Default dark map active.');
+      return;
+    }
+    setBaseMap(type);
+  };
+
+  return (
+    <div
+      className={`relative w-full h-full min-h-[400px] ${
+        pickMode !== 'none' ? 'cursor-crosshair' : ''
+      }`}
+    >
+      <div ref={mapContainerRef} className="w-full h-full bg-slate-100 z-0" />
+
+      {/* Floating Interactive Pick Mode Banner */}
+      {pickMode !== 'none' && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-blue-600 text-white px-4 py-2 rounded-2xl shadow-lg border border-blue-400 flex items-center gap-3 animate-bounce">
+          <Crosshair className="w-4 h-4" />
+          <span className="text-xs font-bold">
+            {pickMode === 'origin'
+              ? 'Click anywhere on the map to set Starting Point (A)'
+              : 'Click anywhere on the map to set Destination (B)'}
+          </span>
+          {onCancelPickMode && (
+            <button
+              onClick={onCancelPickMode}
+              className="ml-2 text-[10px] font-bold bg-blue-700 hover:bg-blue-800 px-2 py-0.5 rounded-lg cursor-pointer"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Top Floating Controls Bar */}
+      <div className="absolute top-4 right-14 z-20 flex items-center gap-2 flex-wrap">
+        {/* TomTom Live Traffic Toggle */}
+        <button
+          onClick={handleTrafficToggle}
+          title={isKeyConfigured ? 'Toggle Real-Time TomTom Traffic Flow' : 'Configure TomTom Live Traffic'}
+          className={`px-3 py-1.5 text-xs  font-bold rounded-xl border shadow-md transition-all cursor-pointer ${
+            showTrafficFlow && isKeyConfigured
+              ? 'bg-[#2B6BFF] text-white border-[#2B6BFF] shadow-[#2B6BFF]/30'
+              : 'bg-[#1E1E1C]/95 backdrop-blur-md hover:bg-[#1E1E1C] text-[#D8CBB3] border-[#D8CBB3]/25'
+          }`}
+        >
+          <span>LIVE TRAFFIC</span>
+        </button>
+
+        {/* TomTom Incidents Toggle */}
+        <button
+          onClick={handleIncidentsToggle}
+          title={isKeyConfigured ? 'Toggle Real-Time Traffic Incidents' : 'Configure TomTom Live Traffic'}
+          className={`hidden sm:flex px-3 py-1.5 text-xs  font-bold rounded-xl border shadow-md transition-all cursor-pointer ${
+            showIncidentsLayer && isKeyConfigured
+              ? 'bg-[#2B6BFF] text-white border-[#2B6BFF] shadow-[#2B6BFF]/30'
+              : 'bg-[#1E1E1C]/95 backdrop-blur-md hover:bg-[#1E1E1C] text-[#D8CBB3] border-[#D8CBB3]/25'
+          }`}
+        >
+          <span>INCIDENTS</span>
+        </button>
+
+        {/* TomTom Flow Segment Inspector Toggle */}
+        <button
+          onClick={() => {
+            if (!isKeyConfigured) {
+              showNotice('Flow segment telemetry inspector requires TOMTOM_API_KEY in server .env.');
+              return;
+            }
+            setInspectorMode(!inspectorMode);
+            if (inspectorMode) {
+              setInspectedSegment(null);
+              setInspectedLatLng(null);
+            }
+          }}
+          title={isKeyConfigured ? 'Inspect Live Speed on any Road' : 'Server key required for live telemetry'}
+          className={`px-3 py-1.5 text-xs  font-bold rounded-xl border shadow-md transition-all cursor-pointer ${
+            inspectorMode
+              ? 'bg-[#2B6BFF] text-white border-[#2B6BFF] shadow-[#2B6BFF]/30'
+              : 'bg-[#1E1E1C]/95 backdrop-blur-md hover:bg-[#1E1E1C] text-[#D8CBB3] border-[#D8CBB3]/25'
+          }`}
+        >
+          <span className="hidden sm:inline">{inspectorMode ? 'INSPECTING...' : 'INSPECT SPEED'}</span>
+        </button>
+
+        {/* Basemap Switcher (Default Dark) */}
+        <div className="bg-[#1E1E1C]/95 backdrop-blur-md p-1 rounded-xl border border-[#D8CBB3]/25 shadow-md flex items-center gap-1">
+          <button
+            onClick={() => handleBaseMapSelect('tomtom_night')}
+            className={`px-2 py-1 text-[11px]  font-bold rounded-lg transition-all cursor-pointer ${
+              baseMap === 'tomtom_night'
+                ? 'bg-[#2B6BFF] text-white shadow-sm'
+                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+            }`}
+          >
+            NIGHT
+          </button>
+          <button
+            onClick={() => handleBaseMapSelect('tomtom_light')}
+            className={`px-2 py-1 text-[11px]  font-bold rounded-lg transition-all cursor-pointer ${
+              baseMap === 'tomtom_light'
+                ? 'bg-[#2B6BFF] text-white shadow-sm'
+                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+            }`}
+          >
+            TOMTOM
+          </button>
+          <button
+            onClick={() => handleBaseMapSelect('tomtom_sat')}
+            className={`px-2 py-1 text-[11px]  font-bold rounded-lg transition-all cursor-pointer ${
+              baseMap === 'tomtom_sat'
+                ? 'bg-[#2B6BFF] text-white shadow-sm'
+                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+            }`}
+          >
+            SAT
+          </button>
+          <button
+            onClick={() => handleBaseMapSelect('osm')}
+            className={`px-2 py-1 text-[11px]  font-bold rounded-lg transition-all cursor-pointer ${
+              baseMap === 'osm'
+                ? 'bg-[#2B6BFF] text-white shadow-sm'
+                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+            }`}
+          >
+            LIGHT
+          </button>
+        </div>
+
+        {/* Map Reset */}
+        <button
+          onClick={handleResetView}
+          title="Recenter Map to Phagwara"
+          className="px-3 py-1.5 bg-[#1E1E1C]/95 backdrop-blur-md hover:bg-[#1E1E1C] text-[#D8CBB3] text-xs  font-bold rounded-xl border border-[#D8CBB3]/25 shadow-md transition-all active:scale-95 cursor-pointer"
+        >
+          <span>RESET</span>
+        </button>
+      </div>
+
+      {/* Minimal Map Legend */}
+      <div className="absolute bottom-4 left-4 z-20 bg-[#1E1E1C]/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-[#D8CBB3]/20 shadow-xl text-xs text-[#D8CBB3] pointer-events-none select-none flex items-center gap-3">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 bg-[#2B6BFF] rounded-full inline-block" />
+          <span className="text-[#D8CBB3]/85 text-[11px] font-sans">Fastest Route</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 bg-[#D8CBB3] rounded-full inline-block" />
+          <span className="text-[#D8CBB3]/85 text-[11px] font-sans">Alternative</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 bg-rose-500 rounded-full inline-block" />
+          <span className="text-[#D8CBB3]/85 text-[11px] font-sans">Closed Road</span>
+        </div>
+      </div>
+
+      {/* Floating Traffic Flow Inspector Card (Feature 4) */}
+      {(inspectedSegment || inspectingLoading) && (
+        <div className="absolute top-16 right-4 z-20 bg-[#1E1E1C]/95 backdrop-blur-md p-4 rounded-2xl border border-[#D8CBB3]/25 shadow-2xl max-w-xs w-full animate-in fade-in slide-in-from-top-2 text-[#D8CBB3]">
+          <div className="flex items-center justify-between border-b border-[#D8CBB3]/15 pb-2 mb-2.5">
+            <div>
+              <span className="font-bold text-xs text-[#D8CBB3] block leading-tight ">Live Speed Telemetry</span>
+              <span className="text-[10px] text-[#D8CBB3]/60 ">TomTom Flow Sensor</span>
+            </div>
+            <button
+              onClick={() => {
+                setInspectedSegment(null);
+                setInspectedLatLng(null);
+              }}
+              className="text-[#D8CBB3]/60 hover:text-[#D8CBB3] p-1 cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {inspectingLoading ? (
+            <div className="py-6 flex flex-col items-center justify-center gap-2 text-[#D8CBB3]/70 text-xs ">
+              <RotateCcw className="w-4 h-4 animate-spin text-[#2B6BFF]" />
+              <span>Querying TomTom sensor metrics...</span>
+            </div>
+          ) : inspectedSegment ? (
+            <div className="flex flex-col gap-2 text-xs ">
+              <div className="flex items-center justify-between">
+                <span className="text-[#D8CBB3]/60">CURRENT SPEED:</span>
+                <span className="font-bold  text-sm text-[#2B6BFF]">
+                  {inspectedSegment.currentSpeed} km/h
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#D8CBB3]/60">FREE-FLOW SPEED:</span>
+                <span className=" text-[#D8CBB3]">{inspectedSegment.freeFlowSpeed} km/h</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#D8CBB3]/60">DELAY:</span>
+                <span className={`font-bold ${inspectedSegment.delaySeconds > 20 ? 'text-rose-400' : 'text-[#2B6BFF]'}`}>
+                  {inspectedSegment.delaySeconds > 0 ? `+${inspectedSegment.delaySeconds}s delay` : 'Free flow'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#D8CBB3]/60">CONGESTION LEVEL:</span>
+                <span className="font-bold text-[#D8CBB3]">{inspectedSegment.congestionPercent}%</span>
+              </div>
+              <div className="w-full bg-[#1E1E1C] border border-[#D8CBB3]/20 rounded-full h-1.5 overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all ${
+                    inspectedSegment.congestionPercent > 50
+                      ? 'bg-rose-500'
+                      : inspectedSegment.congestionPercent > 20
+                      ? 'bg-amber-500'
+                      : 'bg-[#2B6BFF]'
+                  }`}
+                  style={{ width: `${Math.max(6, inspectedSegment.congestionPercent)}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-between pt-1 border-t border-[#D8CBB3]/15">
+                <span className="text-[#D8CBB3]/60">ROAD INTEGRITY:</span>
+                <span
+                  className={`font-bold px-1.5 py-0.5 rounded text-[10px] ${
+                    inspectedSegment.roadClosure
+                      ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                      : 'bg-[#2B6BFF]/20 text-[#2B6BFF] border border-[#2B6BFF]/30'
+                  }`}
+                >
+                  {inspectedSegment.roadClosure ? 'ROAD CLOSED' : 'PASSABLE'}
+                </span>
+              </div>
+              <div className="text-[10px] text-[#D8CBB3]/50 mt-0.5 flex justify-between">
+                <span>Confidence: {Math.round(inspectedSegment.confidence * 100)}%</span>
+                {inspectedLatLng && (
+                  <span className="">
+                    {inspectedLatLng[0].toFixed(3)}, {inspectedLatLng[1].toFixed(3)}
+                  </span>
+                )}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      )}
+
+      {/* Inspector Mode Banner on Map */}
+      {inspectorMode && !inspectedSegment && (
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-20 bg-[#1E1E1C]/95 text-[#D8CBB3] backdrop-blur-md px-4 py-2 rounded-2xl shadow-2xl border border-[#2B6BFF] text-xs flex items-center gap-2 ">
+          <Gauge className="w-4 h-4 text-[#2B6BFF]" />
+          <span>Click any roadway to inspect live speed telemetry in km/h</span>
+        </div>
+      )}
+
+      {/* Telemetry Status Notification Toast */}
+      {statusNotice && (
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-40 bg-[#1E1E1C]/95 border border-[#2B6BFF]/50 text-[#D8CBB3] px-4 py-2.5 rounded-2xl shadow-xl text-xs  flex items-center gap-2.5 backdrop-blur-md animate-in fade-in slide-in-from-top-2">
+          <span className="w-2 h-2 rounded-full bg-[#2B6BFF] animate-ping" />
+          <span>{statusNotice}</span>
+          <button
+            onClick={() => setStatusNotice(null)}
+            className="text-[#D8CBB3]/50 hover:text-[#D8CBB3] ml-2 text-sm cursor-pointer"
+          >
+            &times;
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};

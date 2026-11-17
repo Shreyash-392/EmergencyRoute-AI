@@ -1,0 +1,75 @@
+[
+  {
+    "scenario_id": "morning_peak",
+    "name": "Morning Rush Hour (08:30 - 10:30)",
+    "description": "Heavy commuter traffic along GT Road, Railway Station Road, and Bus Stand.",
+    "time_of_day": "09:00",
+    "affected_corridors": [
+      "GT Road",
+      "Railway Road",
+      "LPU Corridor",
+      "Station Road"
+    ],
+    "global_congestion_factor": 1.65,
+    "closures_count": 0
+  },
+  {
+    "scenario_id": "evening_peak",
+    "name": "Evening Peak & Market Rush (17:30 - 20:30)",
+    "description": "Intense congestion in central bazaars, Model Town, and NH44 interchanges.",
+    "time_of_day": "18:30",
+    "affected_corridors": [
+      "Model Town Road",
+      "Hadiabad Road",
+      "Central Bazaar",
+      "NH44 Bypass"
+    ],
+    "global_congestion_factor": 1.8,
+    "closures_count": 0
+  },
+  {
+    "scenario_id": "midday_normal",
+    "name": "Midday Off-Peak (11:00 - 16:00)",
+    "description": "Standard urban flow with moderate delays at major signalized intersections.",
+    "time_of_day": "13:30",
+    "affected_corridors": [
+      "City Center"
+    ],
+    "global_congestion_factor": 1.15,
+    "closures_count": 0
+  },
+  {
+    "scenario_id": "night_freeflow",
+    "name": "Night Time Free Flow (22:00 - 05:30)",
+    "description": "Uncongested roadways operating at baseline legal speed limits.",
+    "time_of_day": "01:00",
+    "affected_corridors": [],
+    "global_congestion_factor": 1.0,
+    "closures_count": 0
+  },
+  {
+    "scenario_id": "emergency_incident",
+    "name": "Emergency Multi-Vehicle Incident on GT Road",
+    "description": "Major incident blocking 2 lanes near Hanumangarh Chowk, triggering severe bottlenecks.",
+    "time_of_day": "17:00",
+    "affected_corridors": [
+      "GT Road",
+      "Hanumangarh Chowk",
+      "Banga Road"
+    ],
+    "global_congestion_factor": 2.2,
+    "closures_count": 1
+  },
+  {
+    "scenario_id": "monsoon_flooding",
+    "name": "Monsoon Waterlogging & Railway Underpass Closure",
+    "description": "Severe waterlogging forces complete closure of Phagwara Railway Underpass.",
+    "time_of_day": "14:00",
+    "affected_corridors": [
+      "Railway Road",
+      "Subhash Nagar Underpass"
+    ],
+    "global_congestion_factor": 1.95,
+    "closures_count": 2
+  }
+]
