@@ -58,4 +58,9 @@ html, body, #root {
   border: 1px solid rgba(216, 203, 179, 0.25);
 }
 
+/* High-Tech Tactical Dark Filter for OpenStreetMap Tiles (100% Free, Zero Watermark) */
+.dark-tiles {
+  filter: brightness(0.65) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.25) brightness(0.7);
+}
+
 

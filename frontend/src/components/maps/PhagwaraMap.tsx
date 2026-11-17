@@ -200,13 +200,13 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
           return;
         }
       }
-      // High-performance dark map fallback
+      // High-performance keyless dark map (OpenStreetMap + dark theme filter)
       baseTileLayerRef.current = L.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         {
-          attribution: '&copy; CartoDB &copy; OpenStreetMap | EmergencyRoute AI',
+          attribution: '&copy; OpenStreetMap contributors | EmergencyRoute AI',
           maxZoom: 19,
-          subdomains: ['a', 'b', 'c', 'd'],
+          className: 'dark-tiles',
         }
       ).addTo(map);
       return;
@@ -234,13 +234,13 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
       }
     }
 
-    // Default Fallback: Dark Map
+    // Default Fallback: OpenStreetMap Dark
     baseTileLayerRef.current = L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       {
-        attribution: '&copy; CartoDB &copy; OpenStreetMap | EmergencyRoute AI',
+        attribution: '&copy; OpenStreetMap contributors | EmergencyRoute AI',
         maxZoom: 19,
-        subdomains: ['a', 'b', 'c', 'd'],
+        className: 'dark-tiles',
       }
     ).addTo(map);
   }, [baseMap, isKeyConfigured]);
