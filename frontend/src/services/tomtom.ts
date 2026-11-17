@@ -47,7 +47,7 @@ let hasCheckedStatus: boolean = false;
 const checkInitialStatus = async () => {
   try {
     const res = await fetch(`${API_ORIGIN}/api/v1/traffic/telemetry-status`);
-    if (res.ok) {
+    if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
       const data = await res.json();
       isServerConfigured = Boolean(data.configured);
       hasCheckedStatus = true;
@@ -73,7 +73,7 @@ export const tomtomService = {
   async fetchStatus(): Promise<boolean> {
     try {
       const res = await fetch(`${API_ORIGIN}/api/v1/traffic/telemetry-status`);
-      if (res.ok) {
+      if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
         const data = await res.json();
         isServerConfigured = Boolean(data.configured);
         hasCheckedStatus = true;
