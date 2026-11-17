@@ -17,7 +17,9 @@ export default function App() {
   useEffect(() => {
     // Initial fetch of active incidents for the badge
     api.getIncidents()
-      .then(setIncidents)
+      .then((data) => {
+        if (Array.isArray(data)) setIncidents(data);
+      })
       .catch((err) => console.warn('Could not fetch incidents on load:', err));
 
     // Listen to real-time events via WebSocket
@@ -26,16 +28,20 @@ export default function App() {
         event.type === 'incident_created' ||
         event.type === 'dispatch_created'
       ) {
-        api.getIncidents().then(setIncidents).catch(console.warn);
+        api.getIncidents().then((data) => {
+          if (Array.isArray(data)) setIncidents(data);
+        }).catch(console.warn);
       }
     });
 
     return () => unsubscribe();
   }, []);
 
-  const activeIncidentsCount = incidents.filter(
-    (inc) => inc.status === 'reported' || inc.status === 'dispatched'
-  ).length;
+  const activeIncidentsCount = Array.isArray(incidents)
+    ? incidents.filter(
+        (inc) => inc.status === 'reported' || inc.status === 'dispatched'
+      ).length
+    : 0;
 
   return (
     <div className="flex flex-col h-screen bg-[#FAF8F4] text-[#1E1E1C] font-sans overflow-hidden antialiased relative">

@@ -15,7 +15,13 @@ import {
   VehicleRankingResponse,
 } from '../types';
 
-export const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+export const API_ORIGIN = (() => {
+  const envUrl = (import.meta.env.VITE_API_URL || '').trim();
+  if (envUrl.startsWith('http://') || envUrl.startsWith('https://')) {
+    return envUrl.replace(/\/+$/, '');
+  }
+  return '';
+})();
 const API_BASE = `${API_ORIGIN}/api/v1`;
 
 export const apiClient = axios.create({
@@ -152,13 +158,21 @@ export const api = {
 
   // Emergency Dispatch
   getVehicles: async (): Promise<Vehicle[]> => {
-    const res = await apiClient.get<Vehicle[]>('/dispatch/vehicles');
-    return res.data;
+    try {
+      const res = await apiClient.get<Vehicle[]>('/dispatch/vehicles');
+      return Array.isArray(res.data) ? res.data : [];
+    } catch {
+      return [];
+    }
   },
 
   getIncidents: async (): Promise<EmergencyIncident[]> => {
-    const res = await apiClient.get<EmergencyIncident[]>('/dispatch/incidents');
-    return res.data;
+    try {
+      const res = await apiClient.get<EmergencyIncident[]>('/dispatch/incidents');
+      return Array.isArray(res.data) ? res.data : [];
+    } catch {
+      return [];
+    }
   },
 
   createIncident: async (payload: {
@@ -206,7 +220,11 @@ export const api = {
 
   // Polling Fallback
   pollRecentEvents: async (limit = 20): Promise<any[]> => {
-    const res = await apiClient.get('/events/poll', { params: { limit } });
-    return res.data;
+    try {
+      const res = await apiClient.get('/events/poll', { params: { limit } });
+      return Array.isArray(res.data) ? res.data : [];
+    } catch {
+      return [];
+    }
   },
 };
