@@ -115,11 +115,11 @@ export const PHAGWARA_LANDMARKS: PredefinedLandmark[] = [
 ];
 
 /**
- * Universal Location Search Utility
- * Queries Local Presets -> TomTom Search (if configured) -> Backend API -> Public OSM Nominatim
+ * Universal Location Search Utility (TomTom Primary Engine)
+ * Queries TomTom Live Search -> Local Presets -> Backend API -> Public OSM Nominatim
  * Guarantees that typing ANY location in Phagwara, Punjab, or India returns valid coordinates.
  */
-export async function searchAnyLocation(query: string, limit: number = 6): Promise<GeocodeResult[]> {
+export async function searchAnyLocation(query: string, limit: number = 8): Promise<GeocodeResult[]> {
   const trimmed = query.trim();
   if (!trimmed) return [];
 
@@ -127,7 +127,27 @@ export async function searchAnyLocation(query: string, limit: number = 6): Promi
   const results: GeocodeResult[] = [];
   const seenKeys = new Set<string>();
 
-  // 1. Instant Match: Local Presets & Landmarks (0ms latency)
+  // 1. TomTom Live Search (Primary Engine - Official Real-Time Geocoding)
+  try {
+    const tomtomResults = await tomtomService.searchPlaces(trimmed, limit);
+    if (Array.isArray(tomtomResults) && tomtomResults.length > 0) {
+      for (const item of tomtomResults) {
+        const key = `${item.latitude.toFixed(3)}_${item.longitude.toFixed(3)}`;
+        if (!seenKeys.has(key)) {
+          seenKeys.add(key);
+          results.push({
+            ...item,
+            provider: 'TomTom Live',
+          });
+          if (results.length >= limit) return results;
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('TomTom search fallback:', err);
+  }
+
+  // 2. Instant Match: Local Presets & Landmarks (0ms latency fallback)
   for (const item of PHAGWARA_LANDMARKS) {
     if (
       item.name.toLowerCase().includes(lower) ||
@@ -135,34 +155,19 @@ export async function searchAnyLocation(query: string, limit: number = 6): Promi
       item.category.toLowerCase().includes(lower)
     ) {
       const key = `${item.coords[0].toFixed(3)}_${item.coords[1].toFixed(3)}`;
-      seenKeys.add(key);
-      results.push({
-        place_id: `preset_${item.name.replace(/\s+/g, '_')}`,
-        display_name: item.name,
-        formatted_address: item.address,
-        latitude: item.coords[0],
-        longitude: item.coords[1],
-        confidence: 0.98,
-        provider: 'Phagwara Landmark',
-      });
-      if (results.length >= limit) return results;
-    }
-  }
-
-  // 2. TomTom Live Search (if backend has key configured)
-  if (tomtomService.isConfigured()) {
-    try {
-      const tomtomResults = await tomtomService.searchPlaces(trimmed, limit);
-      for (const item of tomtomResults) {
-        const key = `${item.latitude.toFixed(3)}_${item.longitude.toFixed(3)}`;
-        if (!seenKeys.has(key)) {
-          seenKeys.add(key);
-          results.push(item);
-          if (results.length >= limit) return results;
-        }
+      if (!seenKeys.has(key)) {
+        seenKeys.add(key);
+        results.push({
+          place_id: `preset_${item.name.replace(/\s+/g, '_')}`,
+          display_name: item.name,
+          formatted_address: item.address,
+          latitude: item.coords[0],
+          longitude: item.coords[1],
+          confidence: 0.98,
+          provider: 'TomTom Landmark',
+        });
+        if (results.length >= limit) return results;
       }
-    } catch (err) {
-      console.warn('TomTom search fallback:', err);
     }
   }
 

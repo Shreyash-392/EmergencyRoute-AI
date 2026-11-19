@@ -22,7 +22,11 @@ logger = logging.getLogger(__name__)
 # Fallback to local SQLite database in data directory if PostgreSQL is not specified
 DB_FILE = settings.DATA_DIR / "emergency_route.db"
 DEFAULT_DB_URL = f"sqlite:///{DB_FILE}"
-DATABASE_URL = getattr(settings, "DATABASE_URL", None) or DEFAULT_DB_URL
+raw_db_url = getattr(settings, "DATABASE_URL", None) or DEFAULT_DB_URL
+if raw_db_url.startswith("postgres://"):
+    DATABASE_URL = raw_db_url.replace("postgres://", "postgresql://", 1)
+else:
+    DATABASE_URL = raw_db_url
 
 # SQLite requires check_same_thread=False for FastAPI concurrency
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}

@@ -84,10 +84,10 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
   const trafficIncidentsLayerRef = useRef<L.TileLayer | null>(null);
   const layersGroupRef = useRef<L.LayerGroup | null>(null);
 
-  // TomTom UI State (TomTom Night is default map viewer)
-  const [baseMap, setBaseMap] = useState<BaseMapType>('tomtom_night');
-  const [showTrafficFlow, setShowTrafficFlow] = useState<boolean>(false);
-  const [showIncidentsLayer, setShowIncidentsLayer] = useState<boolean>(false);
+  // TomTom UI State (TomTom Light is default map viewer)
+  const [baseMap, setBaseMap] = useState<BaseMapType>('tomtom_light');
+  const [showTrafficFlow, setShowTrafficFlow] = useState<boolean>(true);
+  const [showIncidentsLayer, setShowIncidentsLayer] = useState<boolean>(true);
   const [isKeyConfigured, setIsKeyConfigured] = useState<boolean>(tomtomService.isConfigured());
   const [statusNotice, setStatusNotice] = useState<string | null>(null);
 
@@ -121,7 +121,7 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
         zoomControl: false,
       });
 
-      L.control.zoom({ position: 'topright' }).addTo(map);
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
 
       // Default base layer: TomTom Light if configured, otherwise fallback to OSM
       const initialTomTomUrl = tomtomService.isConfigured()
@@ -759,79 +759,21 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
         </div>
       )}
 
-      {/* Top Floating Controls Bar */}
+      {/* Floating Tactical Map Controls Panel */}
       <div
-        className={`absolute z-20 flex items-center gap-1.5 sm:gap-2 flex-wrap transition-all ${
+        className={`absolute z-20 flex flex-col items-end gap-1.5 transition-all pointer-events-auto ${
           controlsPosition === 'below-search'
-            ? 'top-28 sm:top-24 right-3 sm:right-6 max-w-[calc(100vw-24px)]'
+            ? 'top-36 sm:top-32 right-3 sm:right-6'
             : controlsPosition === 'bottom-right'
             ? 'bottom-20 right-3 sm:right-6'
-            : 'top-4 right-14'
+            : 'top-4 right-4 sm:right-6'
         }`}
       >
-        {/* TomTom Live Traffic Toggle */}
-        <button
-          onClick={handleTrafficToggle}
-          title={isKeyConfigured ? 'Toggle Real-Time TomTom Traffic Flow' : 'Toggle Live Traffic Flow Overlay'}
-          className={`px-3 py-1.5 text-xs font-bold rounded-xl border shadow-md transition-all cursor-pointer ${
-            showTrafficFlow
-              ? 'bg-[#2B6BFF] text-white border-[#2B6BFF] shadow-[#2B6BFF]/30'
-              : 'bg-[#1E1E1C]/95 backdrop-blur-md hover:bg-[#1E1E1C] text-[#D8CBB3] border-[#D8CBB3]/25'
-          }`}
-        >
-          <span>LIVE TRAFFIC</span>
-        </button>
-
-        {/* TomTom Incidents Toggle */}
-        <button
-          onClick={handleIncidentsToggle}
-          title={isKeyConfigured ? 'Toggle Real-Time Traffic Incidents' : 'Toggle Traffic Incidents Layer'}
-          className={`hidden sm:flex px-3 py-1.5 text-xs font-bold rounded-xl border shadow-md transition-all cursor-pointer ${
-            showIncidentsLayer
-              ? 'bg-[#2B6BFF] text-white border-[#2B6BFF] shadow-[#2B6BFF]/30'
-              : 'bg-[#1E1E1C]/95 backdrop-blur-md hover:bg-[#1E1E1C] text-[#D8CBB3] border-[#D8CBB3]/25'
-          }`}
-        >
-          <span>INCIDENTS</span>
-        </button>
-
-        {/* TomTom Flow Segment Inspector Toggle */}
-        <button
-          onClick={() => {
-            const nextMode = !inspectorMode;
-            setInspectorMode(nextMode);
-            if (!nextMode) {
-              setInspectedSegment(null);
-              setInspectedLatLng(null);
-            } else {
-              showNotice('Click any road on the map to inspect speed telemetry.');
-            }
-          }}
-          title="Inspect Live Speed and Road Congestion"
-          className={`px-3 py-1.5 text-xs font-bold rounded-xl border shadow-md transition-all cursor-pointer ${
-            inspectorMode
-              ? 'bg-[#2B6BFF] text-white border-[#2B6BFF] shadow-[#2B6BFF]/30'
-              : 'bg-[#1E1E1C]/95 backdrop-blur-md hover:bg-[#1E1E1C] text-[#D8CBB3] border-[#D8CBB3]/25'
-          }`}
-        >
-          <span className="hidden sm:inline">{inspectorMode ? 'INSPECTING...' : 'INSPECT SPEED'}</span>
-        </button>
-
-        {/* Basemap Switcher (Default Dark) */}
-        <div className="bg-[#1E1E1C]/95 backdrop-blur-md p-1 rounded-xl border border-[#D8CBB3]/25 shadow-md flex items-center gap-1">
-          <button
-            onClick={() => handleBaseMapSelect('tomtom_night')}
-            className={`px-2 py-1 text-[11px]  font-bold rounded-lg transition-all cursor-pointer ${
-              baseMap === 'tomtom_night'
-                ? 'bg-[#2B6BFF] text-white shadow-sm'
-                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
-            }`}
-          >
-            NIGHT
-          </button>
+        {/* Tier 1: Basemap Style Selector (TomTom Default) */}
+        <div className="bg-[#181816] p-1 rounded-xl border border-[#D8CBB3]/30 shadow-xl flex items-center gap-1">
           <button
             onClick={() => handleBaseMapSelect('tomtom_light')}
-            className={`px-2 py-1 text-[11px]  font-bold rounded-lg transition-all cursor-pointer ${
+            className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
               baseMap === 'tomtom_light'
                 ? 'bg-[#2B6BFF] text-white shadow-sm'
                 : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
@@ -840,8 +782,18 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
             TOMTOM
           </button>
           <button
+            onClick={() => handleBaseMapSelect('tomtom_night')}
+            className={`px-2 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+              baseMap === 'tomtom_night'
+                ? 'bg-[#2B6BFF] text-white shadow-sm'
+                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+            }`}
+          >
+            NIGHT
+          </button>
+          <button
             onClick={() => handleBaseMapSelect('tomtom_sat')}
-            className={`px-2 py-1 text-[11px]  font-bold rounded-lg transition-all cursor-pointer ${
+            className={`px-2 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
               baseMap === 'tomtom_sat'
                 ? 'bg-[#2B6BFF] text-white shadow-sm'
                 : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
@@ -851,7 +803,7 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
           </button>
           <button
             onClick={() => handleBaseMapSelect('osm')}
-            className={`px-2 py-1 text-[11px]  font-bold rounded-lg transition-all cursor-pointer ${
+            className={`px-2 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
               baseMap === 'osm'
                 ? 'bg-[#2B6BFF] text-white shadow-sm'
                 : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
@@ -859,16 +811,68 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
           >
             LIGHT
           </button>
+          <div className="w-px h-3.5 bg-[#D8CBB3]/20 mx-0.5" />
+          <button
+            onClick={handleResetView}
+            title="Recenter Map to Phagwara"
+            className="px-2 py-1 text-[10px] font-bold rounded-lg text-[#D8CBB3]/70 hover:text-white transition-all cursor-pointer"
+          >
+            RESET
+          </button>
         </div>
 
-        {/* Map Reset */}
-        <button
-          onClick={handleResetView}
-          title="Recenter Map to Phagwara"
-          className="px-3 py-1.5 bg-[#1E1E1C]/95 backdrop-blur-md hover:bg-[#1E1E1C] text-[#D8CBB3] text-xs  font-bold rounded-xl border border-[#D8CBB3]/25 shadow-md transition-all active:scale-95 cursor-pointer"
-        >
-          <span>RESET</span>
-        </button>
+        {/* Tier 2: Real-Time Telemetry & Overlays (Live Traffic Active by Default) */}
+        <div className="bg-[#181816] p-1 rounded-xl border border-[#D8CBB3]/30 shadow-xl flex items-center gap-1.5">
+          {/* TomTom Live Traffic Toggle */}
+          <button
+            onClick={handleTrafficToggle}
+            title="Toggle Real-Time TomTom Traffic Flow"
+            className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+              showTrafficFlow
+                ? 'bg-[#2B6BFF] text-white shadow-md shadow-[#2B6BFF]/30'
+                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+            }`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${showTrafficFlow ? 'bg-emerald-400 animate-pulse' : 'bg-gray-500'}`} />
+            <span>LIVE TRAFFIC</span>
+          </button>
+
+          {/* TomTom Incidents Toggle */}
+          <button
+            onClick={handleIncidentsToggle}
+            title="Toggle Real-Time Traffic Incidents"
+            className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+              showIncidentsLayer
+                ? 'bg-[#2B6BFF] text-white shadow-md shadow-[#2B6BFF]/30'
+                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+            }`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${showIncidentsLayer ? 'bg-amber-400 animate-pulse' : 'bg-gray-500'}`} />
+            <span>INCIDENTS</span>
+          </button>
+
+          {/* TomTom Flow Segment Inspector Toggle */}
+          <button
+            onClick={() => {
+              const nextMode = !inspectorMode;
+              setInspectorMode(nextMode);
+              if (!nextMode) {
+                setInspectedSegment(null);
+                setInspectedLatLng(null);
+              } else {
+                showNotice('Click any road on the map to inspect speed telemetry.');
+              }
+            }}
+            title="Inspect Live Speed and Road Congestion"
+            className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+              inspectorMode
+                ? 'bg-[#2B6BFF] text-white shadow-md shadow-[#2B6BFF]/30'
+                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+            }`}
+          >
+            <span>{inspectorMode ? 'INSPECTING...' : 'INSPECT SPEED'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Minimal Map Legend */}

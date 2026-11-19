@@ -346,18 +346,29 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateTab }) => {
 
   return (
     <div className="relative w-full h-full min-h-[calc(100vh-80px)] flex flex-col bg-[#1E1E1C] overflow-hidden select-none font-sans">
+      {/* Transparent Click-Outside Overlay to Dismiss Dropdowns */}
+      {(showOriginDropdown || showDestDropdown) && (
+        <div
+          className="fixed inset-0 z-30 pointer-events-auto"
+          onClick={() => {
+            setShowOriginDropdown(false);
+            setShowDestDropdown(false);
+          }}
+        />
+      )}
+
       {/* ============================================================ */}
       {/* 1. TOP FLOATING SEARCH & ROUTE CAPSULE (Clean, Human Design) */}
       {/* ============================================================ */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-4xl pointer-events-none">
-        <div className="pointer-events-auto bg-[#1E1E1C]/92 backdrop-blur-xl border border-[#D8CBB3]/30 rounded-2xl p-3 sm:p-3.5 shadow-2xl text-[#D8CBB3] flex flex-col gap-2.5">
+        <div className="pointer-events-auto bg-[#181816] border border-[#D8CBB3]/30 rounded-2xl p-3 sm:p-3.5 shadow-2xl text-[#D8CBB3] flex flex-col gap-2.5">
           {/* Main Route Inputs */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             {/* Origin & Destination Inputs */}
             <div className="flex items-center gap-2 w-full sm:flex-1">
               {/* Start Location (Origin) with Universal Search */}
               <div className="relative flex-1">
-                <div className="flex items-center gap-2 bg-[#282826] border border-[#D8CBB3]/20 rounded-xl px-3 py-2 text-xs focus-within:border-[#2B6BFF] transition-all">
+                <div className="flex items-center gap-2 bg-[#242422] border border-[#D8CBB3]/25 rounded-xl px-3 py-2 text-xs focus-within:border-[#2B6BFF] transition-all shadow-inner">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#2B6BFF] shrink-0 shadow-sm" />
                   <input
                     type="text"
@@ -386,21 +397,25 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateTab }) => {
                   ) : null}
                 </div>
 
-                {/* Autocomplete Dropdown */}
+                {/* Autocomplete Dropdown (100% Solid Opaque, High Contrast) */}
                 {showOriginDropdown && originSuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1.5 bg-[#1E1E1C]/98 backdrop-blur-2xl border border-[#D8CBB3]/30 rounded-xl shadow-2xl z-50 max-h-56 overflow-y-auto divide-y divide-[#D8CBB3]/10">
+                  <div className="absolute top-full left-0 w-[130%] min-w-[320px] max-w-[480px] mt-2 bg-[#181816] border-2 border-[#2B6BFF] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.95)] z-50 max-h-72 overflow-y-auto divide-y divide-[#D8CBB3]/15">
                     {originSuggestions.map((item, idx) => (
                       <div
                         key={idx}
                         onClick={() => selectOrigin(item)}
-                        className="p-2.5 hover:bg-[#282826] cursor-pointer flex items-center justify-between gap-2 text-xs transition-colors"
+                        className="p-3 hover:bg-[#282826] cursor-pointer flex items-center justify-between gap-3 text-xs transition-colors"
                       >
                         <div className="flex flex-col min-w-0">
-                          <span className="font-bold text-white truncate">{item.display_name}</span>
-                          <span className="text-[10px] text-[#D8CBB3]/60 truncate">{item.formatted_address}</span>
+                          <span className="font-bold text-white text-xs leading-snug">{item.display_name}</span>
+                          <span className="text-[11px] text-[#D8CBB3]/80 leading-normal truncate mt-0.5">{item.formatted_address}</span>
                         </div>
-                        <span className="shrink-0 px-1.5 py-0.5 text-[8px] font-bold rounded bg-[#2B6BFF]/20 text-[#2B6BFF] border border-[#2B6BFF]/30">
-                          {item.provider || 'LOCATION'}
+                        <span className={`shrink-0 px-2 py-0.5 text-[9px] font-extrabold rounded-full ${
+                          item.provider?.includes('TomTom')
+                            ? 'bg-[#2B6BFF] text-white shadow-xs'
+                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                        }`}>
+                          {item.provider || 'TOMTOM'}
                         </span>
                       </div>
                     ))}
@@ -412,14 +427,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateTab }) => {
               <button
                 onClick={handleSwapPoints}
                 title="Swap Start and Destination"
-                className="w-8 h-8 rounded-full bg-[#282826] hover:bg-[#383834] border border-[#D8CBB3]/30 flex items-center justify-center text-[#D8CBB3]/80 hover:text-white shrink-0 transition-transform active:rotate-180 cursor-pointer"
+                className="w-8 h-8 rounded-full bg-[#242422] hover:bg-[#343430] border border-[#D8CBB3]/30 flex items-center justify-center text-[#D8CBB3]/80 hover:text-white shrink-0 transition-transform active:rotate-180 cursor-pointer shadow-sm"
               >
                 <ArrowRightLeft className="w-3.5 h-3.5" />
               </button>
 
               {/* Destination with Universal Search */}
               <div className="relative flex-1">
-                <div className="flex items-center gap-2 bg-[#282826] border border-[#D8CBB3]/20 rounded-xl px-3 py-2 text-xs focus-within:border-rose-500 transition-all">
+                <div className="flex items-center gap-2 bg-[#242422] border border-[#D8CBB3]/25 rounded-xl px-3 py-2 text-xs focus-within:border-rose-500 transition-all shadow-inner">
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0 shadow-sm" />
                   <input
                     type="text"
@@ -448,21 +463,25 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateTab }) => {
                   ) : null}
                 </div>
 
-                {/* Autocomplete Dropdown */}
+                {/* Autocomplete Dropdown (100% Solid Opaque, High Contrast) */}
                 {showDestDropdown && destSuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1.5 bg-[#1E1E1C]/98 backdrop-blur-2xl border border-[#D8CBB3]/30 rounded-xl shadow-2xl z-50 max-h-56 overflow-y-auto divide-y divide-[#D8CBB3]/10">
+                  <div className="absolute top-full right-0 sm:left-auto w-[130%] min-w-[320px] max-w-[480px] mt-2 bg-[#181816] border-2 border-rose-500 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.95)] z-50 max-h-72 overflow-y-auto divide-y divide-[#D8CBB3]/15">
                     {destSuggestions.map((item, idx) => (
                       <div
                         key={idx}
                         onClick={() => selectDestination(item)}
-                        className="p-2.5 hover:bg-[#282826] cursor-pointer flex items-center justify-between gap-2 text-xs transition-colors"
+                        className="p-3 hover:bg-[#282826] cursor-pointer flex items-center justify-between gap-3 text-xs transition-colors"
                       >
                         <div className="flex flex-col min-w-0">
-                          <span className="font-bold text-white truncate">{item.display_name}</span>
-                          <span className="text-[10px] text-[#D8CBB3]/60 truncate">{item.formatted_address}</span>
+                          <span className="font-bold text-white text-xs leading-snug">{item.display_name}</span>
+                          <span className="text-[11px] text-[#D8CBB3]/80 leading-normal truncate mt-0.5">{item.formatted_address}</span>
                         </div>
-                        <span className="shrink-0 px-1.5 py-0.5 text-[8px] font-bold rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                          {item.provider || 'LOCATION'}
+                        <span className={`shrink-0 px-2 py-0.5 text-[9px] font-extrabold rounded-full ${
+                          item.provider?.includes('TomTom')
+                            ? 'bg-rose-500 text-white shadow-xs'
+                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                        }`}>
+                          {item.provider || 'TOMTOM'}
                         </span>
                       </div>
                     ))}
