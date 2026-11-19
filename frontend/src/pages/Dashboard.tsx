@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Activity,
   AlertTriangle,
@@ -15,17 +15,21 @@ import {
   Navigation,
   Play,
   RotateCcw,
+  Search,
   ShieldCheck,
   Sparkles,
+  X,
   Zap,
 } from 'lucide-react';
 import { PhagwaraMap } from '../components/maps/PhagwaraMap';
 import { api } from '../services/api';
 import { tomtomService } from '../services/tomtom';
+import { searchAnyLocation } from '../utils/locationSearch';
 import {
   AlgorithmComparisonSummary,
   AlgorithmResult,
   EmergencyIncident,
+  GeocodeResult,
   OSRMRouteResponse,
   SystemHealth,
 } from '../types';
@@ -61,6 +65,18 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateTab }) => {
   const [originName, setOriginName] = useState('Model Town Phagwara');
   const [destCoords, setDestCoords] = useState<[number, number]>([31.2223, 75.7672]);
   const [destName, setDestName] = useState('Civil Hospital (Emergency)');
+
+  // Universal Search State
+  const [originSearch, setOriginSearch] = useState('Model Town Phagwara');
+  const [destSearch, setDestSearch] = useState('Civil Hospital (Emergency)');
+  const [originSuggestions, setOriginSuggestions] = useState<GeocodeResult[]>([]);
+  const [destSuggestions, setDestSuggestions] = useState<GeocodeResult[]>([]);
+  const [showOriginDropdown, setShowOriginDropdown] = useState(false);
+  const [showDestDropdown, setShowDestDropdown] = useState(false);
+  const [originSearching, setOriginSearching] = useState(false);
+  const [destSearching, setDestSearching] = useState(false);
+  const originTimer = useRef<any>(null);
+  const destTimer = useRef<any>(null);
 
   // Map Click Picking Mode ('none' | 'origin' | 'destination')
   const [pickMode, setPickMode] = useState<'none' | 'origin' | 'destination'>('none');
@@ -215,25 +231,94 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateTab }) => {
     calculateAllAlgorithms(originCoords, destCoords);
   }, []);
 
+  const handleOriginSearch = (query: string) => {
+    setOriginSearch(query);
+    setShowOriginDropdown(true);
+    if (originTimer.current) clearTimeout(originTimer.current);
+    if (!query.trim()) {
+      setOriginSuggestions([]);
+      return;
+    }
+    setOriginSearching(true);
+    originTimer.current = setTimeout(async () => {
+      try {
+        const results = await searchAnyLocation(query, 6);
+        setOriginSuggestions(results);
+      } catch {
+        setOriginSuggestions([]);
+      } finally {
+        setOriginSearching(false);
+      }
+    }, 220);
+  };
+
+  const handleDestSearch = (query: string) => {
+    setDestSearch(query);
+    setShowDestDropdown(true);
+    if (destTimer.current) clearTimeout(destTimer.current);
+    if (!query.trim()) {
+      setDestSuggestions([]);
+      return;
+    }
+    setDestSearching(true);
+    destTimer.current = setTimeout(async () => {
+      try {
+        const results = await searchAnyLocation(query, 6);
+        setDestSuggestions(results);
+      } catch {
+        setDestSuggestions([]);
+      } finally {
+        setDestSearching(false);
+      }
+    }, 220);
+  };
+
+  const selectOrigin = (item: GeocodeResult) => {
+    const coords: [number, number] = [item.latitude, item.longitude];
+    setOriginCoords(coords);
+    setOriginName(item.display_name);
+    setOriginSearch(item.display_name);
+    setShowOriginDropdown(false);
+    calculateAllAlgorithms(coords, destCoords);
+  };
+
+  const selectDestination = (item: GeocodeResult) => {
+    const coords: [number, number] = [item.latitude, item.longitude];
+    setDestCoords(coords);
+    setDestName(item.display_name);
+    setDestSearch(item.display_name);
+    setShowDestDropdown(false);
+    calculateAllAlgorithms(originCoords, coords);
+  };
+
   const handleSwapPoints = () => {
     const tempCoords = originCoords;
     const tempName = originName;
+    const tempSearch = originSearch;
     setOriginCoords(destCoords);
     setOriginName(destName);
+    setOriginSearch(destSearch);
     setDestCoords(tempCoords);
     setDestName(tempName);
+    setDestSearch(tempSearch);
+    setShowOriginDropdown(false);
+    setShowDestDropdown(false);
     calculateAllAlgorithms(destCoords, tempCoords);
   };
 
   const handleSelectDestination = (landmark: PresetLandmark) => {
     setDestCoords(landmark.coords);
     setDestName(landmark.name);
+    setDestSearch(landmark.name);
+    setShowDestDropdown(false);
     calculateAllAlgorithms(originCoords, landmark.coords);
   };
 
   const handleSelectOrigin = (landmark: PresetLandmark) => {
     setOriginCoords(landmark.coords);
     setOriginName(landmark.name);
+    setOriginSearch(landmark.name);
+    setShowOriginDropdown(false);
     calculateAllAlgorithms(landmark.coords, destCoords);
   };
 
@@ -270,25 +355,57 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateTab }) => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             {/* Origin & Destination Inputs */}
             <div className="flex items-center gap-2 w-full sm:flex-1">
-              {/* Start Location */}
+              {/* Start Location (Origin) with Universal Search */}
               <div className="relative flex-1">
-                <div className="flex items-center gap-2 bg-[#282826] border border-[#D8CBB3]/20 rounded-xl px-3 py-2 text-xs">
-                  <span className="w-2 h-2 rounded-full bg-[#2B6BFF] shrink-0" />
-                  <select
-                    value={originName}
-                    onChange={(e) => {
-                      const found = PRESET_ORIGINS.find((o) => o.name === e.target.value);
-                      if (found) handleSelectOrigin(found);
+                <div className="flex items-center gap-2 bg-[#282826] border border-[#D8CBB3]/20 rounded-xl px-3 py-2 text-xs focus-within:border-[#2B6BFF] transition-all">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#2B6BFF] shrink-0 shadow-sm" />
+                  <input
+                    type="text"
+                    value={originSearch}
+                    onChange={(e) => handleOriginSearch(e.target.value)}
+                    onFocus={() => {
+                      setShowOriginDropdown(true);
+                      setShowDestDropdown(false);
+                      if (!originSuggestions.length && originSearch) handleOriginSearch(originSearch);
                     }}
-                    className="bg-transparent text-[#D8CBB3] font-medium text-xs focus:outline-none cursor-pointer w-full truncate"
-                  >
-                    {PRESET_ORIGINS.map((o) => (
-                      <option key={o.name} value={o.name} className="bg-[#1E1E1C] text-[#D8CBB3]">
-                        {o.name}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="Search start location, street, or landmark..."
+                    className="bg-transparent text-[#D8CBB3] placeholder-[#D8CBB3]/40 font-medium text-xs focus:outline-none w-full truncate"
+                  />
+                  {originSearching ? (
+                    <div className="w-3 h-3 border-2 border-[#2B6BFF] border-t-transparent rounded-full animate-spin shrink-0" />
+                  ) : originSearch ? (
+                    <button
+                      onClick={() => {
+                        setOriginSearch('');
+                        setOriginSuggestions([]);
+                      }}
+                      className="text-[#D8CBB3]/40 hover:text-white shrink-0 p-0.5 cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  ) : null}
                 </div>
+
+                {/* Autocomplete Dropdown */}
+                {showOriginDropdown && originSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 bg-[#1E1E1C]/98 backdrop-blur-2xl border border-[#D8CBB3]/30 rounded-xl shadow-2xl z-50 max-h-56 overflow-y-auto divide-y divide-[#D8CBB3]/10">
+                    {originSuggestions.map((item, idx) => (
+                      <div
+                        key={idx}
+                        onClick={() => selectOrigin(item)}
+                        className="p-2.5 hover:bg-[#282826] cursor-pointer flex items-center justify-between gap-2 text-xs transition-colors"
+                      >
+                        <div className="flex flex-col min-w-0">
+                          <span className="font-bold text-white truncate">{item.display_name}</span>
+                          <span className="text-[10px] text-[#D8CBB3]/60 truncate">{item.formatted_address}</span>
+                        </div>
+                        <span className="shrink-0 px-1.5 py-0.5 text-[8px] font-bold rounded bg-[#2B6BFF]/20 text-[#2B6BFF] border border-[#2B6BFF]/30">
+                          {item.provider || 'LOCATION'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Swap Button */}
@@ -300,25 +417,57 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateTab }) => {
                 <ArrowRightLeft className="w-3.5 h-3.5" />
               </button>
 
-              {/* Destination */}
+              {/* Destination with Universal Search */}
               <div className="relative flex-1">
-                <div className="flex items-center gap-2 bg-[#282826] border border-[#D8CBB3]/20 rounded-xl px-3 py-2 text-xs">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
-                  <select
-                    value={destName}
-                    onChange={(e) => {
-                      const found = PRESET_DESTINATIONS.find((d) => d.name === e.target.value);
-                      if (found) handleSelectDestination(found);
+                <div className="flex items-center gap-2 bg-[#282826] border border-[#D8CBB3]/20 rounded-xl px-3 py-2 text-xs focus-within:border-rose-500 transition-all">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0 shadow-sm" />
+                  <input
+                    type="text"
+                    value={destSearch}
+                    onChange={(e) => handleDestSearch(e.target.value)}
+                    onFocus={() => {
+                      setShowDestDropdown(true);
+                      setShowOriginDropdown(false);
+                      if (!destSuggestions.length && destSearch) handleDestSearch(destSearch);
                     }}
-                    className="bg-transparent text-[#D8CBB3] font-medium text-xs focus:outline-none cursor-pointer w-full truncate"
-                  >
-                    {PRESET_DESTINATIONS.map((d) => (
-                      <option key={d.name} value={d.name} className="bg-[#1E1E1C] text-[#D8CBB3]">
-                        {d.name}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="Search hospital or destination..."
+                    className="bg-transparent text-[#D8CBB3] placeholder-[#D8CBB3]/40 font-medium text-xs focus:outline-none w-full truncate"
+                  />
+                  {destSearching ? (
+                    <div className="w-3 h-3 border-2 border-rose-500 border-t-transparent rounded-full animate-spin shrink-0" />
+                  ) : destSearch ? (
+                    <button
+                      onClick={() => {
+                        setDestSearch('');
+                        setDestSuggestions([]);
+                      }}
+                      className="text-[#D8CBB3]/40 hover:text-white shrink-0 p-0.5 cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  ) : null}
                 </div>
+
+                {/* Autocomplete Dropdown */}
+                {showDestDropdown && destSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 bg-[#1E1E1C]/98 backdrop-blur-2xl border border-[#D8CBB3]/30 rounded-xl shadow-2xl z-50 max-h-56 overflow-y-auto divide-y divide-[#D8CBB3]/10">
+                    {destSuggestions.map((item, idx) => (
+                      <div
+                        key={idx}
+                        onClick={() => selectDestination(item)}
+                        className="p-2.5 hover:bg-[#282826] cursor-pointer flex items-center justify-between gap-2 text-xs transition-colors"
+                      >
+                        <div className="flex flex-col min-w-0">
+                          <span className="font-bold text-white truncate">{item.display_name}</span>
+                          <span className="text-[10px] text-[#D8CBB3]/60 truncate">{item.formatted_address}</span>
+                        </div>
+                        <span className="shrink-0 px-1.5 py-0.5 text-[8px] font-bold rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                          {item.provider || 'LOCATION'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -389,23 +538,36 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateTab }) => {
       {/* ============================================================ */}
       <div className="w-full h-full relative z-0">
         <PhagwaraMap
+          controlsPosition="below-search"
           selectedOrigin={originCoords}
           selectedDestination={destCoords}
           onOriginChange={(lat, lng) => {
+            const label = `Dropped Pin (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
             setOriginCoords([lat, lng]);
+            setOriginName(label);
+            setOriginSearch(label);
             calculateAllAlgorithms([lat, lng], destCoords);
           }}
           onDestinationChange={(lat, lng) => {
+            const label = `Dropped Pin (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
             setDestCoords([lat, lng]);
+            setDestName(label);
+            setDestSearch(label);
             calculateAllAlgorithms(originCoords, [lat, lng]);
           }}
           onSelectCoordinate={(lat, lng) => {
             if (pickMode === 'origin') {
+              const label = `Selected Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
               setOriginCoords([lat, lng]);
+              setOriginName(label);
+              setOriginSearch(label);
               setPickMode('destination');
               calculateAllAlgorithms([lat, lng], destCoords);
             } else if (pickMode === 'destination') {
+              const label = `Selected Destination (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
               setDestCoords([lat, lng]);
+              setDestName(label);
+              setDestSearch(label);
               setPickMode('none');
               calculateAllAlgorithms(originCoords, [lat, lng]);
             }

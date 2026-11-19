@@ -52,6 +52,7 @@ interface PhagwaraMapProps {
   onDestinationChange?: (lat: number, lng: number) => void;
   pickMode?: 'none' | 'origin' | 'destination';
   onCancelPickMode?: () => void;
+  controlsPosition?: 'top' | 'below-search' | 'bottom-right';
 }
 
 const PHAGWARA_CENTER: [number, number] = [31.2231, 75.7708];
@@ -74,6 +75,7 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
   onDestinationChange,
   pickMode = 'none',
   onCancelPickMode,
+  controlsPosition = 'top',
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<L.Map | null>(null);
@@ -758,7 +760,15 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
       )}
 
       {/* Top Floating Controls Bar */}
-      <div className="absolute top-4 right-14 z-20 flex items-center gap-2 flex-wrap">
+      <div
+        className={`absolute z-20 flex items-center gap-1.5 sm:gap-2 flex-wrap transition-all ${
+          controlsPosition === 'below-search'
+            ? 'top-28 sm:top-24 right-3 sm:right-6 max-w-[calc(100vw-24px)]'
+            : controlsPosition === 'bottom-right'
+            ? 'bottom-20 right-3 sm:right-6'
+            : 'top-4 right-14'
+        }`}
+      >
         {/* TomTom Live Traffic Toggle */}
         <button
           onClick={handleTrafficToggle}
