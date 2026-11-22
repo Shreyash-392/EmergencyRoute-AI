@@ -44,16 +44,16 @@ export default function App() {
     : 0;
 
   return (
-    <div className="flex flex-col h-screen bg-[#FAF8F4] text-[#1E1E1C] font-sans overflow-hidden antialiased relative">
-      {/* Floating Island Navigation Capsule (Reference Layout) */}
+    <div className="h-screen w-screen bg-[#1E1E1C] text-[#1E1E1C] font-sans overflow-hidden antialiased relative">
+      {/* Floating Island Navigation Capsule (Top Left) */}
       <Navbar
         activeTab={currentTab}
         onSelectTab={setCurrentTab}
         activeIncidentsCount={activeIncidentsCount}
       />
 
-      {/* Main Full-Width Application Viewport */}
-      <main className="flex-1 overflow-y-auto">
+      {/* Main Full-Width Application Viewport (True Edge-to-Edge) */}
+      <main className="w-full h-full relative overflow-hidden">
         {currentTab === 'dashboard' && (
           <div className="h-full w-full">
             <Dashboard onNavigateTab={setCurrentTab} />
@@ -61,31 +61,31 @@ export default function App() {
         )}
 
         {currentTab === 'route-planner' && (
-          <div className="h-full pt-2">
+          <div className="h-full pt-14 bg-[#FAF8F4] overflow-y-auto">
             <RoutePlanner />
           </div>
         )}
 
         {currentTab === 'road-conditions' && (
-          <div className="h-full pt-2">
+          <div className="h-full pt-14 bg-[#FAF8F4] overflow-y-auto">
             <RoadConditions />
           </div>
         )}
 
         {currentTab === 'emergency-reports' && (
-          <div className="h-full pt-2">
+          <div className="h-full pt-14 bg-[#FAF8F4] overflow-y-auto">
             <EmergencyReports />
           </div>
         )}
 
         {currentTab === 'route-performance' && (
-          <div className="h-full pt-2">
+          <div className="h-full pt-14 bg-[#FAF8F4] overflow-y-auto">
             <RoutePerformance />
           </div>
         )}
 
         {currentTab === 'settings' && (
-          <div className="h-full pt-2">
+          <div className="h-full pt-14 bg-[#FAF8F4] overflow-y-auto">
             <SystemSettings />
           </div>
         )}

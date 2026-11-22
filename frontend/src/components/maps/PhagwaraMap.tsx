@@ -39,7 +39,7 @@ interface PhagwaraMapProps {
   activeRoute?: AlgorithmResult | null;
   comparisonRoutes?: Record<string, AlgorithmResult> | null;
   osrmRoute?: OSRMRouteResponse | null;
-  routeMode?: 'local_astar' | 'osrm' | 'compare_both';
+  routeMode?: string;
   vehicles?: Vehicle[];
   incidents?: EmergencyIncident[];
   closedEdges?: [number, number, number][];
@@ -130,14 +130,14 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
 
       const initialBaseLayer = initialTomTomUrl
         ? L.tileLayer(initialTomTomUrl, {
-            attribution: '&copy; TomTom Maps | EmergencyRoute AI',
-            maxZoom: 19,
-          })
+          attribution: '&copy; TomTom Maps | EmergencyRoute AI',
+          maxZoom: 19,
+        })
         : L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors | EmergencyRoute AI',
-            maxZoom: 19,
-            subdomains: ['a', 'b', 'c'],
-          });
+          attribution: '&copy; OpenStreetMap contributors | EmergencyRoute AI',
+          maxZoom: 19,
+          subdomains: ['a', 'b', 'c'],
+        });
 
       initialBaseLayer.addTo(map);
       baseTileLayerRef.current = initialBaseLayer;
@@ -449,39 +449,80 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
       }
     }
 
-    // 5. Render Comparison Routes if present
+    // 5. Render Comparison Routes if present (BFS, DFS, Greedy Best-First, A*)
     if (comparisonRoutes) {
-      if (comparisonRoutes.BFS?.coordinates?.length) {
-        L.polyline(comparisonRoutes.BFS.coordinates, {
-          color: '#06b6d4',
-          weight: 4,
-          dashArray: '6, 6',
-          opacity: 0.8,
+      if (comparisonRoutes.A_Star?.coordinates?.length) {
+        const polyA = L.polyline(comparisonRoutes.A_Star.coordinates, {
+          color: '#2B6BFF',
+          weight: 6,
+          opacity: 0.95,
         })
           .addTo(layerGroup)
-          .bindPopup('<b>BFS Route (Fewest Road Segments)</b>');
+          .bindPopup(`
+            <div style="font-family: system-ui; font-size: 12px; color: #1e293b;">
+              <b style="color: #2B6BFF;">A* Search (Optimal)</b><br/>
+              Distance: <b>${comparisonRoutes.A_Star.path_distance_km} km</b><br/>
+              Est. Time: <b>${comparisonRoutes.A_Star.estimated_travel_time_minutes} min</b><br/>
+              Nodes Explored: <b>${comparisonRoutes.A_Star.nodes_explored}</b>
+            </div>
+          `);
+        if (routeMode === 'compare_all' || routeMode === 'A_Star') {
+          map.fitBounds(polyA.getBounds(), { padding: [40, 40] });
+        }
       }
 
       if (comparisonRoutes.Greedy_Best_First?.coordinates?.length) {
         L.polyline(comparisonRoutes.Greedy_Best_First.coordinates, {
           color: '#f59e0b',
           weight: 4,
-          dashArray: '4, 4',
-          opacity: 0.8,
+          dashArray: '5, 5',
+          opacity: 0.9,
         })
           .addTo(layerGroup)
-          .bindPopup('<b>Greedy Best-First Route</b>');
+          .bindPopup(`
+            <div style="font-family: system-ui; font-size: 12px; color: #1e293b;">
+              <b style="color: #f59e0b;">Greedy Best-First Search</b><br/>
+              Distance: <b>${comparisonRoutes.Greedy_Best_First.path_distance_km} km</b><br/>
+              Est. Time: <b>${comparisonRoutes.Greedy_Best_First.estimated_travel_time_minutes} min</b><br/>
+              Nodes Explored: <b>${comparisonRoutes.Greedy_Best_First.nodes_explored}</b>
+            </div>
+          `);
+      }
+
+      if (comparisonRoutes.BFS?.coordinates?.length) {
+        L.polyline(comparisonRoutes.BFS.coordinates, {
+          color: '#06b6d4',
+          weight: 4,
+          dashArray: '6, 6',
+          opacity: 0.85,
+        })
+          .addTo(layerGroup)
+          .bindPopup(`
+            <div style="font-family: system-ui; font-size: 12px; color: #1e293b;">
+              <b style="color: #0891b2;">BFS (Fewest Hops)</b><br/>
+              Distance: <b>${comparisonRoutes.BFS.path_distance_km} km</b><br/>
+              Est. Time: <b>${comparisonRoutes.BFS.estimated_travel_time_minutes} min</b><br/>
+              Nodes Explored: <b>${comparisonRoutes.BFS.nodes_explored}</b>
+            </div>
+          `);
       }
 
       if (comparisonRoutes.DFS?.coordinates?.length) {
         L.polyline(comparisonRoutes.DFS.coordinates, {
-          color: '#8b5cf6',
+          color: '#a855f7',
           weight: 3,
-          dashArray: '2, 6',
-          opacity: 0.7,
+          dashArray: '3, 6',
+          opacity: 0.8,
         })
           .addTo(layerGroup)
-          .bindPopup('<b>DFS Route (Depth First)</b>');
+          .bindPopup(`
+            <div style="font-family: system-ui; font-size: 12px; color: #1e293b;">
+              <b style="color: #7e22ce;">DFS (Depth-First Search)</b><br/>
+              Distance: <b>${comparisonRoutes.DFS.path_distance_km} km</b><br/>
+              Est. Time: <b>${comparisonRoutes.DFS.estimated_travel_time_minutes} min</b><br/>
+              Nodes Explored: <b>${comparisonRoutes.DFS.nodes_explored}</b>
+            </div>
+          `);
       }
     }
 
@@ -733,16 +774,15 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
 
   return (
     <div
-      className={`relative w-full h-full min-h-[400px] ${
-        pickMode !== 'none' ? 'cursor-crosshair' : ''
-      }`}
+      className={`relative w-full h-full min-h-[400px] ${pickMode !== 'none' ? 'cursor-crosshair' : ''
+        }`}
     >
       <div ref={mapContainerRef} className="w-full h-full bg-slate-100 z-0" />
 
-      {/* Floating Interactive Pick Mode Banner */}
+      {/* Floating Interactive Pick Mode Banner (Positioned cleanly below search capsule) */}
       {pickMode !== 'none' && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-blue-600 text-white px-4 py-2 rounded-2xl shadow-lg border border-blue-400 flex items-center gap-3 animate-bounce">
-          <Crosshair className="w-4 h-4" />
+        <div className="absolute top-36 left-1/2 -translate-x-1/2 z-40 bg-[#2B6BFF] text-white px-4 py-2 rounded-2xl shadow-2xl border border-blue-300 flex items-center gap-3 backdrop-blur-md">
+          <Crosshair className="w-4 h-4 text-amber-300 animate-spin" />
           <span className="text-xs font-bold">
             {pickMode === 'origin'
               ? 'Click anywhere on the map to set Starting Point (A)'
@@ -751,7 +791,7 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
           {onCancelPickMode && (
             <button
               onClick={onCancelPickMode}
-              className="ml-2 text-[10px] font-bold bg-blue-700 hover:bg-blue-800 px-2 py-0.5 rounded-lg cursor-pointer"
+              className="ml-2 text-[10px] font-bold bg-white/20 hover:bg-white/30 text-white px-2 py-0.5 rounded-lg cursor-pointer transition-colors"
             >
               Cancel
             </button>
@@ -759,232 +799,68 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
         </div>
       )}
 
-      {/* Floating Tactical Map Controls Panel */}
-      <div
-        className={`absolute z-20 flex flex-col items-end gap-1.5 transition-all pointer-events-auto ${
-          controlsPosition === 'below-search'
-            ? 'top-36 sm:top-32 right-3 sm:right-6'
-            : controlsPosition === 'bottom-right'
-            ? 'bottom-20 right-3 sm:right-6'
-            : 'top-4 right-4 sm:right-6'
-        }`}
-      >
-        {/* Tier 1: Basemap Style Selector (TomTom Default) */}
-        <div className="bg-[#181816] p-1 rounded-xl border border-[#D8CBB3]/30 shadow-xl flex items-center gap-1">
+      {/* Floating Modern Map Controls Capsule (Top Right) */}
+      <div className="absolute top-3 right-3 sm:right-6 z-40 pointer-events-auto select-none">
+        <div className="bg-[#181816]/95 backdrop-blur-xl p-1 rounded-full border border-[#D8CBB3]/30 shadow-2xl flex items-center gap-1">
           <button
             onClick={() => handleBaseMapSelect('tomtom_light')}
-            className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+            className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${
               baseMap === 'tomtom_light'
-                ? 'bg-[#2B6BFF] text-white shadow-sm'
-                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+                ? 'bg-[#2B6BFF] text-white shadow-xs'
+                : 'text-[#D8CBB3]/70 hover:text-white'
             }`}
           >
-            TOMTOM
+            TomTom
           </button>
           <button
             onClick={() => handleBaseMapSelect('tomtom_night')}
-            className={`px-2 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+            className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${
               baseMap === 'tomtom_night'
-                ? 'bg-[#2B6BFF] text-white shadow-sm'
-                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+                ? 'bg-[#2B6BFF] text-white shadow-xs'
+                : 'text-[#D8CBB3]/70 hover:text-white'
             }`}
           >
-            NIGHT
+            Night
           </button>
           <button
             onClick={() => handleBaseMapSelect('tomtom_sat')}
-            className={`px-2 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+            className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${
               baseMap === 'tomtom_sat'
-                ? 'bg-[#2B6BFF] text-white shadow-sm'
-                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+                ? 'bg-[#2B6BFF] text-white shadow-xs'
+                : 'text-[#D8CBB3]/70 hover:text-white'
             }`}
           >
-            SAT
+            Satellite
           </button>
           <button
             onClick={() => handleBaseMapSelect('osm')}
-            className={`px-2 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+            className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${
               baseMap === 'osm'
-                ? 'bg-[#2B6BFF] text-white shadow-sm'
-                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+                ? 'bg-[#2B6BFF] text-white shadow-xs'
+                : 'text-[#D8CBB3]/70 hover:text-white'
             }`}
           >
-            LIGHT
+            Light
           </button>
-          <div className="w-px h-3.5 bg-[#D8CBB3]/20 mx-0.5" />
-          <button
-            onClick={handleResetView}
-            title="Recenter Map to Phagwara"
-            className="px-2 py-1 text-[10px] font-bold rounded-lg text-[#D8CBB3]/70 hover:text-white transition-all cursor-pointer"
-          >
-            RESET
-          </button>
-        </div>
-
-        {/* Tier 2: Real-Time Telemetry & Overlays (Live Traffic Active by Default) */}
-        <div className="bg-[#181816] p-1 rounded-xl border border-[#D8CBB3]/30 shadow-xl flex items-center gap-1.5">
-          {/* TomTom Live Traffic Toggle */}
+          <div className="w-px h-4 bg-[#D8CBB3]/20 mx-0.5" />
           <button
             onClick={handleTrafficToggle}
-            title="Toggle Real-Time TomTom Traffic Flow"
-            className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+            title="Toggle Live Traffic Flow Layer"
+            className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer flex items-center gap-1.5 ${
               showTrafficFlow
-                ? 'bg-[#2B6BFF] text-white shadow-md shadow-[#2B6BFF]/30'
-                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
+                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                : 'text-[#D8CBB3]/60 hover:text-white'
             }`}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${showTrafficFlow ? 'bg-emerald-400 animate-pulse' : 'bg-gray-500'}`} />
-            <span>LIVE TRAFFIC</span>
-          </button>
-
-          {/* TomTom Incidents Toggle */}
-          <button
-            onClick={handleIncidentsToggle}
-            title="Toggle Real-Time Traffic Incidents"
-            className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
-              showIncidentsLayer
-                ? 'bg-[#2B6BFF] text-white shadow-md shadow-[#2B6BFF]/30'
-                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
-            }`}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${showIncidentsLayer ? 'bg-amber-400 animate-pulse' : 'bg-gray-500'}`} />
-            <span>INCIDENTS</span>
-          </button>
-
-          {/* TomTom Flow Segment Inspector Toggle */}
-          <button
-            onClick={() => {
-              const nextMode = !inspectorMode;
-              setInspectorMode(nextMode);
-              if (!nextMode) {
-                setInspectedSegment(null);
-                setInspectedLatLng(null);
-              } else {
-                showNotice('Click any road on the map to inspect speed telemetry.');
-              }
-            }}
-            title="Inspect Live Speed and Road Congestion"
-            className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
-              inspectorMode
-                ? 'bg-[#2B6BFF] text-white shadow-md shadow-[#2B6BFF]/30'
-                : 'text-[#D8CBB3]/70 hover:text-[#D8CBB3]'
-            }`}
-          >
-            <span>{inspectorMode ? 'INSPECTING...' : 'INSPECT SPEED'}</span>
+            <span>Live Traffic</span>
           </button>
         </div>
       </div>
-
-      {/* Minimal Map Legend */}
-      <div className="absolute bottom-4 left-4 z-20 bg-[#1E1E1C]/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-[#D8CBB3]/20 shadow-xl text-xs text-[#D8CBB3] pointer-events-none select-none flex items-center gap-3">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 bg-[#2B6BFF] rounded-full inline-block" />
-          <span className="text-[#D8CBB3]/85 text-[11px] font-sans">Fastest Route</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 bg-[#D8CBB3] rounded-full inline-block" />
-          <span className="text-[#D8CBB3]/85 text-[11px] font-sans">Alternative</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 bg-rose-500 rounded-full inline-block" />
-          <span className="text-[#D8CBB3]/85 text-[11px] font-sans">Closed Road</span>
-        </div>
-      </div>
-
-      {/* Floating Traffic Flow Inspector Card (Feature 4) */}
-      {(inspectedSegment || inspectingLoading) && (
-        <div className="absolute top-16 right-4 z-20 bg-[#1E1E1C]/95 backdrop-blur-md p-4 rounded-2xl border border-[#D8CBB3]/25 shadow-2xl max-w-xs w-full animate-in fade-in slide-in-from-top-2 text-[#D8CBB3]">
-          <div className="flex items-center justify-between border-b border-[#D8CBB3]/15 pb-2 mb-2.5">
-            <div>
-              <span className="font-bold text-xs text-[#D8CBB3] block leading-tight ">Live Speed Telemetry</span>
-              <span className="text-[10px] text-[#D8CBB3]/60 ">TomTom Flow Sensor</span>
-            </div>
-            <button
-              onClick={() => {
-                setInspectedSegment(null);
-                setInspectedLatLng(null);
-              }}
-              className="text-[#D8CBB3]/60 hover:text-[#D8CBB3] p-1 cursor-pointer"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          {inspectingLoading ? (
-            <div className="py-6 flex flex-col items-center justify-center gap-2 text-[#D8CBB3]/70 text-xs ">
-              <RotateCcw className="w-4 h-4 animate-spin text-[#2B6BFF]" />
-              <span>Querying TomTom sensor metrics...</span>
-            </div>
-          ) : inspectedSegment ? (
-            <div className="flex flex-col gap-2 text-xs ">
-              <div className="flex items-center justify-between">
-                <span className="text-[#D8CBB3]/60">CURRENT SPEED:</span>
-                <span className="font-bold  text-sm text-[#2B6BFF]">
-                  {inspectedSegment.currentSpeed} km/h
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#D8CBB3]/60">FREE-FLOW SPEED:</span>
-                <span className=" text-[#D8CBB3]">{inspectedSegment.freeFlowSpeed} km/h</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#D8CBB3]/60">DELAY:</span>
-                <span className={`font-bold ${inspectedSegment.delaySeconds > 20 ? 'text-rose-400' : 'text-[#2B6BFF]'}`}>
-                  {inspectedSegment.delaySeconds > 0 ? `+${inspectedSegment.delaySeconds}s delay` : 'Free flow'}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#D8CBB3]/60">CONGESTION LEVEL:</span>
-                <span className="font-bold text-[#D8CBB3]">{inspectedSegment.congestionPercent}%</span>
-              </div>
-              <div className="w-full bg-[#1E1E1C] border border-[#D8CBB3]/20 rounded-full h-1.5 overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all ${
-                    inspectedSegment.congestionPercent > 50
-                      ? 'bg-rose-500'
-                      : inspectedSegment.congestionPercent > 20
-                      ? 'bg-amber-500'
-                      : 'bg-[#2B6BFF]'
-                  }`}
-                  style={{ width: `${Math.max(6, inspectedSegment.congestionPercent)}%` }}
-                />
-              </div>
-              <div className="flex items-center justify-between pt-1 border-t border-[#D8CBB3]/15">
-                <span className="text-[#D8CBB3]/60">ROAD INTEGRITY:</span>
-                <span
-                  className={`font-bold px-1.5 py-0.5 rounded text-[10px] ${
-                    inspectedSegment.roadClosure
-                      ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                      : 'bg-[#2B6BFF]/20 text-[#2B6BFF] border border-[#2B6BFF]/30'
-                  }`}
-                >
-                  {inspectedSegment.roadClosure ? 'ROAD CLOSED' : 'PASSABLE'}
-                </span>
-              </div>
-              <div className="text-[10px] text-[#D8CBB3]/50 mt-0.5 flex justify-between">
-                <span>Confidence: {Math.round(inspectedSegment.confidence * 100)}%</span>
-                {inspectedLatLng && (
-                  <span className="">
-                    {inspectedLatLng[0].toFixed(3)}, {inspectedLatLng[1].toFixed(3)}
-                  </span>
-                )}
-              </div>
-            </div>
-          ) : null}
-        </div>
-      )}
-
-      {/* Inspector Mode Banner on Map */}
-      {inspectorMode && !inspectedSegment && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-20 bg-[#1E1E1C]/95 text-[#D8CBB3] backdrop-blur-md px-4 py-2 rounded-2xl shadow-2xl border border-[#2B6BFF] text-xs flex items-center gap-2 ">
-          <Gauge className="w-4 h-4 text-[#2B6BFF]" />
-          <span>Click any roadway to inspect live speed telemetry in km/h</span>
-        </div>
-      )}
 
       {/* Telemetry Status Notification Toast */}
       {statusNotice && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-40 bg-[#1E1E1C]/95 border border-[#2B6BFF]/50 text-[#D8CBB3] px-4 py-2.5 rounded-2xl shadow-xl text-xs  flex items-center gap-2.5 backdrop-blur-md animate-in fade-in slide-in-from-top-2">
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-40 bg-[#1E1E1C]/95 border border-[#2B6BFF]/50 text-[#D8CBB3] px-4 py-2.5 rounded-2xl shadow-xl text-xs flex items-center gap-2.5 backdrop-blur-md animate-in fade-in slide-in-from-top-2">
           <span className="w-2 h-2 rounded-full bg-[#2B6BFF] animate-ping" />
           <span>{statusNotice}</span>
           <button
