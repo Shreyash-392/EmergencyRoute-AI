@@ -402,10 +402,10 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
       }
     });
 
-    // 3. Render Recommended Route (Local A* - Green #10b981)
-    if (activeRoute && activeRoute.coordinates && activeRoute.coordinates.length > 1) {
+    // 3. Render Recommended Route (When not displaying full comparison suite)
+    if (!comparisonRoutes && activeRoute && activeRoute.coordinates && activeRoute.coordinates.length > 1) {
       const poly = L.polyline(activeRoute.coordinates, {
-        color: '#10b981',
+        color: '#2B6BFF',
         weight: 6,
         opacity: 0.95,
       }).addTo(layerGroup);

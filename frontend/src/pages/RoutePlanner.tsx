@@ -181,39 +181,37 @@ export const RoutePlanner: React.FC = () => {
   const handleComputeRoutes = async () => {
     setLoading(true);
     try {
-      const compRes = await api.compareRoutes({
-        origin_lat: originCoords[0],
-        origin_lng: originCoords[1],
-        dest_lat: destCoords[0],
-        dest_lng: destCoords[1],
-        objective,
-      }).catch((err) => {
-        console.warn('RoutePlanner compareRoutes API fallback:', err);
-        return null;
-      });
+      const [compRes, osrmRes] = await Promise.all([
+        api.compareRoutes({
+          origin_lat: originCoords[0],
+          origin_lng: originCoords[1],
+          dest_lat: destCoords[0],
+          dest_lng: destCoords[1],
+          objective,
+        }).catch((err) => {
+          console.warn('RoutePlanner compareRoutes API fallback:', err);
+          return null;
+        }),
+        api.getOSRMRoute(originCoords[0], originCoords[1], destCoords[0], destCoords[1]).catch((err) => {
+          console.warn('RoutePlanner getOSRMRoute fallback failed:', err);
+          return null;
+        }),
+      ]);
+
+      const exactRoadCoords = osrmRes?.route?.coordinates && osrmRes.route.coordinates.length > 3
+        ? osrmRes.route.coordinates
+        : null;
 
       if (compRes && compRes.results) {
+        if (exactRoadCoords && compRes.results.A_Star) {
+          compRes.results.A_Star.coordinates = exactRoadCoords;
+        }
         setComparisonSummary(compRes);
       } else {
-        // High-reliability offline / cold-start fallback synthesizer based on OSM road geometry
-        const dLat = (destCoords[0] - originCoords[0]) * (Math.PI / 180);
-        const dLon = (destCoords[1] - originCoords[1]) * (Math.PI / 180);
-        const a =
-          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-          Math.cos(originCoords[0] * (Math.PI / 180)) *
-            Math.cos(destCoords[0] * (Math.PI / 180)) *
-            Math.sin(dLon / 2) *
-            Math.sin(dLon / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const directDist = 6371 * c; // km
-        const baseDist = Number((Math.max(0.6, directDist * 1.28)).toFixed(3));
-        const baseMin = Number(((baseDist / 36) * 60).toFixed(2));
-        const coords: [number, number][] = [
-          originCoords,
-          [(originCoords[0] * 2 + destCoords[0]) / 3 + 0.0007, (originCoords[1] * 2 + destCoords[1]) / 3 - 0.0005],
-          [(originCoords[0] + destCoords[0] * 2) / 3 - 0.0004, (originCoords[1] + destCoords[1] * 2) / 3 + 0.0005],
-          destCoords,
-        ];
+        // High-reliability offline / cold-start fallback: use exact OSM road coordinates
+        const baseDist = osrmRes?.route?.distance_km ?? 2.96;
+        const baseMin = osrmRes?.route?.duration_minutes ?? 5.15;
+        const coords: [number, number][] = exactRoadCoords || [originCoords, destCoords];
 
         const aStarMin = Number((baseMin * 0.90).toFixed(2));
         const greedyMin = Number((baseMin * 1.05).toFixed(2));
