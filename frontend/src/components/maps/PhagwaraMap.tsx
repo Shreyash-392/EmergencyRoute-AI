@@ -451,78 +451,86 @@ export const PhagwaraMap: React.FC<PhagwaraMapProps> = ({
 
     // 5. Render Comparison Routes if present (BFS, DFS, Greedy Best-First, A*)
     if (comparisonRoutes) {
-      if (comparisonRoutes.A_Star?.coordinates?.length) {
-        const polyA = L.polyline(comparisonRoutes.A_Star.coordinates, {
-          color: '#2B6BFF',
-          weight: 6,
-          opacity: 0.95,
-        })
-          .addTo(layerGroup)
-          .bindPopup(`
-            <div style="font-family: system-ui; font-size: 12px; color: #1e293b;">
-              <b style="color: #2B6BFF;">A* Search (Optimal)</b><br/>
-              Distance: <b>${comparisonRoutes.A_Star.path_distance_km} km</b><br/>
-              Est. Time: <b>${comparisonRoutes.A_Star.estimated_travel_time_minutes} min</b><br/>
-              Nodes Explored: <b>${comparisonRoutes.A_Star.nodes_explored}</b>
-            </div>
-          `);
-        if (routeMode === 'compare_all' || routeMode === 'A_Star') {
-          map.fitBounds(polyA.getBounds(), { padding: [40, 40] });
-        }
-      }
+      const activeKey = routeMode && ['A_Star', 'Greedy_Best_First', 'BFS', 'DFS'].includes(routeMode)
+        ? routeMode
+        : 'A_Star';
 
-      if (comparisonRoutes.Greedy_Best_First?.coordinates?.length) {
-        L.polyline(comparisonRoutes.Greedy_Best_First.coordinates, {
-          color: '#f59e0b',
-          weight: 4,
-          dashArray: '5, 5',
-          opacity: 0.9,
-        })
-          .addTo(layerGroup)
-          .bindPopup(`
-            <div style="font-family: system-ui; font-size: 12px; color: #1e293b;">
-              <b style="color: #f59e0b;">Greedy Best-First Search</b><br/>
-              Distance: <b>${comparisonRoutes.Greedy_Best_First.path_distance_km} km</b><br/>
-              Est. Time: <b>${comparisonRoutes.Greedy_Best_First.estimated_travel_time_minutes} min</b><br/>
-              Nodes Explored: <b>${comparisonRoutes.Greedy_Best_First.nodes_explored}</b>
-            </div>
-          `);
-      }
+      const algoConfig: Record<string, { name: string; color: string; tag: string }> = {
+        A_Star: { name: 'A* Search (Optimal)', color: '#2B6BFF', tag: 'Optimal' },
+        Greedy_Best_First: { name: 'Greedy Best-First Search', color: '#f59e0b', tag: 'Fast' },
+        BFS: { name: 'Breadth-First Search (BFS)', color: '#06b6d4', tag: 'Fewest Hops' },
+        DFS: { name: 'Depth-First Search (DFS)', color: '#a855f7', tag: 'Baseline Detour' },
+      };
 
-      if (comparisonRoutes.BFS?.coordinates?.length) {
-        L.polyline(comparisonRoutes.BFS.coordinates, {
-          color: '#06b6d4',
+      let activePolyline: L.Polyline | null = null;
+
+      // First pass: Render non-active comparison routes as dashed background reference lines
+      Object.entries(algoConfig).forEach(([key, cfg]) => {
+        if (key === activeKey && routeMode !== 'compare_all') return;
+        const routeData = comparisonRoutes[key];
+        if (!routeData?.coordinates?.length) return;
+
+        const poly = L.polyline(routeData.coordinates, {
+          color: cfg.color,
           weight: 4,
           dashArray: '6, 6',
-          opacity: 0.85,
+          opacity: 0.45,
         })
           .addTo(layerGroup)
           .bindPopup(`
-            <div style="font-family: system-ui; font-size: 12px; color: #1e293b;">
-              <b style="color: #0891b2;">BFS (Fewest Hops)</b><br/>
-              Distance: <b>${comparisonRoutes.BFS.path_distance_km} km</b><br/>
-              Est. Time: <b>${comparisonRoutes.BFS.estimated_travel_time_minutes} min</b><br/>
-              Nodes Explored: <b>${comparisonRoutes.BFS.nodes_explored}</b>
+            <div style="font-family: system-ui; font-size: 12px; color: #1e293b; min-width: 170px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                <b style="color: ${cfg.color};">${cfg.name}</b>
+                <span style="font-size: 9px; padding: 1px 6px; border-radius: 4px; background: ${cfg.color}15; color: ${cfg.color}; font-weight: 700;">${cfg.tag}</span>
+              </div>
+              <div>Distance: <b>${routeData.path_distance_km} km</b></div>
+              <div>Est. Time: <b>${routeData.estimated_travel_time_minutes} min</b></div>
+              <div>Nodes Explored: <b>${routeData.nodes_explored}</b></div>
+              <div style="font-size: 10px; color: #64748b; margin-top: 4px;">(Select this card below to spotlight)</div>
             </div>
           `);
+
+        poly.on('mouseover', () => {
+          poly.setStyle({ weight: 6, opacity: 0.9 });
+        });
+        poly.on('mouseout', () => {
+          poly.setStyle({ weight: 4, opacity: 0.45 });
+        });
+      });
+
+      // Second pass: Render the ACTIVE / SPOTLIGHT route on top with maximum prominence
+      if (routeMode !== 'compare_all' && comparisonRoutes[activeKey]?.coordinates?.length) {
+        const activeData = comparisonRoutes[activeKey];
+        const activeCfg = algoConfig[activeKey];
+
+        activePolyline = L.polyline(activeData.coordinates, {
+          color: activeCfg.color,
+          weight: 7,
+          opacity: 1.0,
+        })
+          .addTo(layerGroup)
+          .bindPopup(`
+            <div style="font-family: system-ui; font-size: 12px; color: #1e293b; min-width: 180px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                <b style="color: ${activeCfg.color}; font-size: 13px;">${activeCfg.name}</b>
+                <span style="font-size: 9px; padding: 2px 6px; border-radius: 4px; background: ${activeCfg.color}; color: #ffffff; font-weight: 700;">ACTIVE SPOTLIGHT</span>
+              </div>
+              <div>Distance: <b>${activeData.path_distance_km} km</b></div>
+              <div>Est. Travel Time: <b>${activeData.estimated_travel_time_minutes} min</b></div>
+              <div>Nodes Explored: <b>${activeData.nodes_explored} nodes</b></div>
+              <div>Weighted Cost: <b>${activeData.weighted_path_cost}</b></div>
+            </div>
+          `);
+
+        activePolyline.bringToFront();
       }
 
-      if (comparisonRoutes.DFS?.coordinates?.length) {
-        L.polyline(comparisonRoutes.DFS.coordinates, {
-          color: '#a855f7',
-          weight: 3,
-          dashArray: '3, 6',
-          opacity: 0.8,
-        })
-          .addTo(layerGroup)
-          .bindPopup(`
-            <div style="font-family: system-ui; font-size: 12px; color: #1e293b;">
-              <b style="color: #7e22ce;">DFS (Depth-First Search)</b><br/>
-              Distance: <b>${comparisonRoutes.DFS.path_distance_km} km</b><br/>
-              Est. Time: <b>${comparisonRoutes.DFS.estimated_travel_time_minutes} min</b><br/>
-              Nodes Explored: <b>${comparisonRoutes.DFS.nodes_explored}</b>
-            </div>
-          `);
+      // Auto-fit bounds to the active route or primary A*
+      if (activePolyline) {
+        map.fitBounds(activePolyline.getBounds(), { padding: [50, 50] });
+      } else if (comparisonRoutes.A_Star?.coordinates?.length) {
+        const boundsPoly = L.polyline(comparisonRoutes.A_Star.coordinates);
+        map.fitBounds(boundsPoly.getBounds(), { padding: [50, 50] });
       }
     }
 
